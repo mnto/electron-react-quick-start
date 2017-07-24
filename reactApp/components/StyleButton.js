@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../../assets/stylesheets/StyleButton.scss';
 
 class StyleButton extends React.Component {
   constructor() {
@@ -10,9 +11,9 @@ class StyleButton extends React.Component {
   }
 
   render() {
-    let className = 'RichEditor-styleButton';
+    let className = 'styleButton';
     if (this.props.active) {
-      className += ' RichEditor-activeButton';
+      className += ' activeButton';
     }
 
     return (
