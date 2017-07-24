@@ -40,6 +40,8 @@
     "express": "^4.15.3",
     "materialize-css": "^0.100.1",
     "mongoose": "^4.11.4",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "style-loader": "^0.18.2"
