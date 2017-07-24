@@ -1,13 +1,14 @@
-// * {
-//  box-sizing: border-box;
-// }
-//
-// #content {
-//  width: 480px;
-//  margin: 0 auto;
-// }
-//
-// .editor {
-//  border: 1px solid grey;
-//  padding: 6px;
-// }
+.editorRoot {
+  background: #fff;
+  border: 1px solid #ddd;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  padding: 15px;
+}
+
+.editor {
+  border-top: 1px solid #ddd;
+  cursor: text;
+  font-size: 16px;
+  margin-top: 10px;
+}
