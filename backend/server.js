@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const passport = require('passport');
+
 const mongoose = require('mongoose');
 import { User } from './models/models';
 import hashPassword from './helper/passwordHash';
@@ -71,6 +72,8 @@ app.post('/register', (req, res) => {
     }
   });
 });
+
+
 
 
 
