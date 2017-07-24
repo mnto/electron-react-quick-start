@@ -25,9 +25,6 @@ class TextEditor extends React.Component {
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
   keyBindingFn(e) {
-    // if (e.keyCode === 85 && hasCommandModifier(e)) {
-    //   return 'Underline'
-    // }
     return getDefaultKeyBinding(e);
   }
 
