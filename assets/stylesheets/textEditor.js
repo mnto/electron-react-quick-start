@@ -14,6 +14,6 @@ const styles = {
     fontSize: 16,
     marginTop: 10
   }
-}
+};
 
 export default styles;

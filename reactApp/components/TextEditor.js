@@ -21,18 +21,18 @@ class TextEditor extends React.Component {
     this.focus = () => this.refs.editor.focus();
 
     this.handleKeyCommand = (command) =>
-    this.handleKeyCommand(command);
+      this.handleKeyCommand(command);
 
     //when tab is pressed in editor
     this.onTab = (e) => this.onTab(e);
 
     //when a block type is selected
     this.toggleBlockType = (type) =>
-    this.toggleBlockType(type);
+      this.toggleBlockType(type);
 
     //when an inline style is selected
     this.toggleInlineStyle = (style) =>
-    this._toggleInlineStyle(style);
+      this.toggleInlineStyle(style);
   }
 
   //recieves all keyDown events.
@@ -98,7 +98,6 @@ class TextEditor extends React.Component {
         <div style={styles.editor} onClick={this.focus}>
           <Editor
             handleKeyCommand={this.handleKeyCommand}
-            keyBindingFn={this.keyBindingFn}
             editorState={this.state.editorState}
             onChange={this.onChange}
             onTab={this.onTab}
