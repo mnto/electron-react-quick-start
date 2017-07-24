@@ -22,13 +22,13 @@ class TextEditor extends React.Component {
   render() {
     return (
         <div>
-            {/* <Toolbar
+            <Toolbar
                 onBold={this.onBoldClick.bind(this)}
             />
             <Editor
                 editorState={this.state.editorState}
                 onChange={this.onChange}
-            /> */}
+            />
         </div>
 
     );
