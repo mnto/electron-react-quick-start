@@ -36,6 +36,7 @@
     "draft-js": "^0.10.1",
     "express": "^4.15.3",
     "materialize-css": "^0.100.1",
+    "mongoose": "^4.11.4",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   }
