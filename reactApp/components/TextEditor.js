@@ -15,35 +15,18 @@ class TextEditor extends React.Component {
 
     //when something in the editor changes
     this.onChange = (editorState) =>
-    this.setState({editorState});
+      this.setState({editorState});
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
-
-    this.handleKeyCommand = (command) =>
-    this.handleKeyCommand(command);
-
-    //when tab is pressed in editor
-    this.onTab = (e) => this.onTab(e);
-
-    //when a block type is selected
-    this.toggleBlockType = (type) =>
-    this.toggleBlockType(type);
-
-    //when an inline style is selected
-    this.toggleInlineStyle = (style) =>
-    this._toggleInlineStyle(style);
   }
 
   //recieves all keyDown events.
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
-  // keyBindingFn(e) {
-  //   switch(e) {
-  //   default:
-  //     return getDefaultKeyBinding(e)
-  //   }
-  // }
+  keyBindingFn(e) {
+    return getDefaultKeyBinding(e);
+  }
 
   //recieve all commands from key bindings and applies changes
   handleKeyCommand(command) {
@@ -89,19 +72,19 @@ class TextEditor extends React.Component {
       <div className="editorRoot">
         <BlockStyleControls
           editorState={this.state.editorState}
-          onToggle={this.toggleBlockType}
+          onToggle={this.toggleBlockType.bind(this)}
         />
         <InlineStyleControls
           editorState={this.state.editorState}
-          onToggle={this.toggleInlineStyle}
+          onToggle={this.toggleInlineStyle.bind(this)}
         />
         <div className="editor" onClick={this.focus}>
           <Editor
-            handleKeyCommand={this.handleKeyCommand}
-            keyBindingFn={this.keyBindingFn}
+            handleKeyCommand={this.handleKeyCommand.bind(this)}
+            keyBindingFn={this.keyBindingFn.bind(this)}
             editorState={this.state.editorState}
             onChange={this.onChange}
-            onTab={this.onTab}
+            onTab={this.onTab.bind(this)}
             ref="editor"
           />
         </div>
