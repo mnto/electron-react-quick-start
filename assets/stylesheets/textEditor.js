@@ -1,17 +1,19 @@
 const styles = {
   editorRoot: {
-    background: #fff;
-    border: 1px solid #ddd;
-    font-family: 'Georgia', serif;
-    font-size: 14px;
-    padding: 15px;
+    background: '#fff',
+    borderWidth: 10,
+    borderColor: '#ddd',
+    fontFamily: 'Georgia',
+    fontSize: 14,
+    padding: 15,
   },
   editor: {
-    border-top: 1px solid #ddd;
-    cursor: text;
-    font-size: 16px;
-    margin-top: 10px;
+    borderTop: 1,
+    borderColor: '#ddd',
+    cursor: 'text',
+    fontSize: 16,
+    marginTop: 10
   }
 }
 
-export default style;
+export default styles;

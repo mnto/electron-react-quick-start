@@ -1,7 +1,9 @@
 import React from 'react';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
-import styles from '../../assets/stylesheets/textEditor.js';
+import styles from '../../assets/stylesheets/textEditor.js'
+import BlockStyleControls from './BlockStyleControls';
+import InlineStyleControls from './InlineStyleControls';
 
 class TextEditor extends React.Component {
   constructor(props) {
@@ -85,10 +87,13 @@ class TextEditor extends React.Component {
   render() {
     return (
       <div style={styles.editorRoot}>
-        <Toolbar
+        <BlockStyleControls
           editorState={this.state.editorState}
-          blockToggle={this.toggleBlockType}
-          inlineToggle={this.toggleInlineStyle}
+          onToggle={this.toggleBlockType}
+        />
+        <InlineStyleControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleInlineStyle}
         />
         <div style={styles.editor} onClick={this.focus}>
           <Editor

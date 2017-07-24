@@ -29,7 +29,7 @@ const BlockStyleControls = (props) => {
           key={type.label}
           active={type.style === blockType}
           label={type.label}
-          onToggle={this.props.onToggle}
+          onToggle={props.onToggle}
           style={type.style}
         />
       )}

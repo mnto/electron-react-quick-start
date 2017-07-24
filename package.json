@@ -33,6 +33,7 @@
     "eslint-plugin-react": "^5.2.2"
   },
   "dependencies": {
+    "css-loader": "^0.28.4",
     "draft-js": "^0.10.1",
     "express": "^4.15.3",
     "materialize-css": "^0.100.1",
