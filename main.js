@@ -19,7 +19,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'build', DEV_MODE ? 'index.dev.html' : 'index.html'),
+    pathname: path.join(__dirname, '/frontend/build', DEV_MODE ? 'index.dev.html' : 'index.html'),
     protocol: 'file:',
     slashes: true
   }));
