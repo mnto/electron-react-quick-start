@@ -2,10 +2,10 @@
 
 const express = require('express');
 const router = express.Router();
-import  { User } from '../models/models';
+const  { User } = require('../models/models');
 const hashPassword = require('../helper/passwordHash');
 
-auth = (passport) => {
+var auth = (passport) => {
 
   // GET Login page
   router.get('/', function(req, res) {
@@ -53,5 +53,5 @@ auth = (passport) => {
 
   return router;
 };
+module.exports = auth;
 
-export default auth;

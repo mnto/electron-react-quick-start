@@ -1,3 +1,7 @@
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI);
+mongoose.Promise = global.Promise;
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -7,31 +11,25 @@ const LocalStrategy = require('passport-local').Strategy;
 
 
 // import API routes
-const routes = require('./routes/routes');
-const auth = require('./routes/auth');
+// const routes = require('./Routes/routes');
+const auth = require('./Routes/auth');
+const database = require('./Routes/database');
 
-import { User } from './models/models';
-import hashPassword from './helper/passwordHash';
+const { User } = require('./models/models');
+const hashPassword = require('./helper/passwordHash');
 
 const app = express();
-
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//connect to mongoDB
-const mongoose = require('mongoose');
-const connect = process.env.MONGODB_URI || require('./models/connect');
-mongoose.connect(connect);
-
 //passport setup
 app.use(session({
-  secret: process.env.SECRET,
-  cookie: {
-    // In milliseconds, i.e., five minutes
-    maxAge: 1000 * 60 * 5
-  },
+  secret: 'HELLO MY NAME IS BOB',
+  // cookie: {
+  //   // In milliseconds, i.e., five minutes
+  //   maxAge: 1000 * 60 * 5
+  // },
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({mongooseConnection: mongoose.connection})
@@ -76,7 +74,8 @@ passport.use(new LocalStrategy( (username, password, done) => {
 
 
 app.use('/', auth(passport));
-app.use('/', routes);
+// app.use('/', routes);
+app.use('/', database);
 
 app.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!');
