@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-import  { Document } from '../models/models';
+var Document = require('../models/models');
 
 // router.post('/register', (req, res) => {
 //   const username = req.body.username;
@@ -48,3 +47,6 @@ router.post('/new-doc', (req, res) => {
 router.post('/save-doc', (req, res) => {
 
 });
+
+module.exports = router;
+
