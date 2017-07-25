@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../assets/stylesheets/StyleButton.scss';
+import styles from '../../assets/stylesheets/styleButton.scss';
 
 class StyleButton extends React.Component {
   constructor() {
