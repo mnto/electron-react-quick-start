@@ -1,4 +1,4 @@
 node_modules
-build/*
-!build/index.*
+frontend/build/*
+!frontend/build/index.*
 env.sh

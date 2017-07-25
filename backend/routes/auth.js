@@ -18,6 +18,10 @@ var auth = (passport) => {
     res.redirect('/');
   });
 
+  router.get('/user/logged-in', (req, res) => {
+    res.json({user: req.user});
+  });
+
   // GET Logout page
   router.get('/logout', (req, res) => {
     req.logout();
@@ -32,6 +36,7 @@ var auth = (passport) => {
   });
 
   router.post('/register', (req, res) => {
+    console.log('HELLO HERE IN REG')
     const password = hashPassword(req.body.password);
 
     const newUser = new User({
