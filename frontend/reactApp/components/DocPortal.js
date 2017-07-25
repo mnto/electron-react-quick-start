@@ -50,6 +50,7 @@ class DocPortal extends React.Component{
           )}
         </ul>
         <Button waves='light' href='/docs/new'>Click to create a new document<Icon left>create</Icon></Button>
+
       </div>
     );
   }

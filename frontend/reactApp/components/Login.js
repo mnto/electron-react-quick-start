@@ -55,6 +55,7 @@ class Login extends React.Component {
               <Link to="/documents" onSubmit={(e) => this.onSubmit(e)} className="btn waves-effect waves-light green accent-3">Login</Link>
             </div>
           </form>
+          <Link to="/register" className="btn waves-effect waves-light accent-3">Login</Link>
         </div>
       </div>
     );
