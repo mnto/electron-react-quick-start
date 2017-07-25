@@ -29,6 +29,7 @@ class Register extends React.Component{
     // .catch((err) => {
     //   console.log("Error saving to database", err);
     // });
+    
     fetch('/register', {
       method: 'POST',
       body: JSON.stringify({

@@ -41,9 +41,8 @@ import  { Document } from '../models/models';
 //   failureRedirect: '/login'
 // }));
 
-router.post('/save-doc', (req, res) => {
-  var newDoc = new Document({
-    collaborators: [req.user.id],
-    text: req.body.text,
-  })
+router.post('/new-doc', (req, res) => {
+
 })
+
+router.post('/save-doc')
