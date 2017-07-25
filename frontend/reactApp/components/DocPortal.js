@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-materialize';
-// const Document  = require('../../backend/models/models').Document;
+import { Document } from '../../../backend/models/models';
+import NewDocModal from './NewDocModal';
 
 class DocPortal extends React.Component{
   constructor(props){
