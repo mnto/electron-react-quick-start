@@ -40,7 +40,7 @@ class TextEditor extends React.Component {
   render() {
     return (
       <div className="editorRoot">
-        <BlockStyleControls
+        {/* <BlockStyleControls
           editorState={this.state.editorState}
           onToggle={this.toggleBlockType.bind(this)}
         />
@@ -56,9 +56,8 @@ class TextEditor extends React.Component {
             onChange={this.onChange}
             onTab={this.onTab.bind(this)}
             ref="editor"
-          />
+          /> */}
         </div>
-
     );
   }
 }
