@@ -1,6 +1,5 @@
 import React from 'react';
 import User from '../../backend/models/models';
-const crypto = require('crypto');
 
 class Register extends React.Component{
   constructor(props){
@@ -11,29 +10,36 @@ class Register extends React.Component{
     };
   }
 
-  hashPassword = (password) => {
-    const hash = crypto.createHash('sha256');
-    hash.update(password);
-    return hash.digest('hex');
-  }
+
 
   onSubmit = () => {
-    const hashed = this.hashPassword(this.state.password);
-    const newUser = new User({
-      username: this.state.username,
-      password: hashed
-    });
-
-    newUser.save()
-    .then(() => {
-      this.setState({
-        username: '',
-        password: ''
-      });
+    // const hashed = this.hashPassword(this.state.password);
+    // const newUser = new User({
+    //   username: this.state.username,
+    //   password: hashed
+    // });
+    //
+    // newUser.save()
+    // .then(() => {
+    //   this.setState({
+    //     username: '',
+    //     password: ''
+    //   });
+    // })
+    // .catch((err) => {
+    //   console.log("Error saving to database", err);
+    // });
+    
+    fetch('/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      },
     })
-    .catch((err) => {
-      console.log("Error saving to database", err);
-    });
 
   }
 
@@ -52,7 +58,7 @@ class Register extends React.Component{
   render(){
     return(
         <div className="row">
-          <form className="col s12" onSubmit={() => this.onSubmit()}>
+          <form className="col s12" onSubmit={() => this.onSubmit()} method="POST" action="/register">
             <div className="row">
               <div className="input-field col s6">
                 <i className="material-icons prefix">account_box</i>
@@ -65,11 +71,12 @@ class Register extends React.Component{
                 <label for="icon_telephone">Password</label>
               </div>
             </div>
-            <button className="btn waves-effect waves-light green accent-3" type="submit" name="action">
+            <input className="btn waves-effect waves-light green accent-3" type="submit" name="action">
               Register
               <i className="material-icons right">send</i>
-            </button>
+            </input>
           </form>
+           <a class="waves-effect btn-flat" href="/login">Back to login</a>
         </div>
     );
   }
