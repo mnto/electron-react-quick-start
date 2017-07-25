@@ -39,10 +39,6 @@ class Register extends React.Component{
     });
   }
 
-  componentDidMount(){
-    Materialize.updateTextFields();
-  }
-
   render(){
     return(
         <div className="row">

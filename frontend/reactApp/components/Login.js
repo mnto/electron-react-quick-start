@@ -20,6 +20,7 @@ class Login extends React.Component {
     })
     .then((resp) => {
       console.log('success', resp);
+      this.props.history.push('/documents');
     })
     .catch((err) => {
       console.log('error logging in', err);
@@ -35,6 +36,18 @@ class Login extends React.Component {
   onPasswordChange(event) {
     this.setState({
       password: event.target.value
+    });
+  }
+
+  componentDidMount(){
+    axios.get('http://localhost:3000/user/logged-in')
+    .then((response) => {
+      if (response.user){
+        this.props.history.push('/documents');
+      }
+    })
+    .catch((err) => {
+      console.log("ERROR", err);
     });
   }
 
