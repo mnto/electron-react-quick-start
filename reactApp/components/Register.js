@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import User from '../../backend/models/models';
 
 class Register extends React.Component{
@@ -29,17 +30,17 @@ class Register extends React.Component{
     // .catch((err) => {
     //   console.log("Error saving to database", err);
     // });
-    
-    fetch('/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      },
+
+    axios.post('/register', {
+      username: this.state.username,
+      password: this.state.password
     })
+    .then((response) => {
+      console.log('success', response);
+    })
+    .catch((error) => {
+      console.log("ERROR WITH REGISTRATION", error);
+    });
 
   }
 
