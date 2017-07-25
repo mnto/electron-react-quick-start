@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-materialize';
-import { Document } from '../../backend/models/models';
+// const Document  = require('../../backend/models/models').Document;
 
 class DocPortal extends React.Component{
   constructor(props){
@@ -32,22 +32,26 @@ class DocPortal extends React.Component{
   render(){
     return(
       <div>
-        <h4>Your documents</h4>
-        <ul>
-          {this.state.ownDocs.map(
-            (doc) => {
-              return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
-            }
-          )}
-        </ul>
-        <ul>
+        <div>
+          <h4>Your documents</h4>
+          <ul>
+            {this.state.ownDocs.map(
+              (doc) => {
+                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+              }
+            )}
+          </ul>
+        </div>
+        <div>
           <h4>Collaborating documents</h4>
-          {this.state.collabDocs.map(
-            (doc) => {
-              return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
-            }
-          )}
-        </ul>
+          <ul>
+            {this.state.collabDocs.map(
+              (doc) => {
+                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+              }
+            )}
+          </ul>
+        </div>
       </div>
     );
   }
