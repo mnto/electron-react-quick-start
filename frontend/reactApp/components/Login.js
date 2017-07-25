@@ -14,12 +14,13 @@ class Login extends React.Component {
   onSubmit(event) {
     event.preventDefault();
     console.log('loggin in');
-    axios.post('/login', {
+    axios.post('http://localhost:3000/login', {
       username: this.state.username,
       password: this.state.password
     })
     .then((resp) => {
       console.log('success', resp);
+      this.props.history.push('/documents');
     })
     .catch((err) => {
       console.log('error logging in', err);
@@ -38,11 +39,23 @@ class Login extends React.Component {
     });
   }
 
+  componentDidMount(){
+    axios.get('http://localhost:3000/user/logged-in')
+    .then((response) => {
+      if (response.user){
+        this.props.history.push('/documents');
+      }
+    })
+    .catch((err) => {
+      console.log("ERROR", err);
+    });
+  }
+
   render() {
     return (
       <div className="container">
         <div className="row">
-          <form className="col s12">
+          <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
             <div className="row">
               <div className="input-field col s6">
                 <i className="material-icons prefix">account_box</i>
@@ -52,7 +65,7 @@ class Login extends React.Component {
                 <i className="material-icons prefix">lock</i>
                 <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
               </div>
-              <Link to="/documents" onSubmit={(e) => this.onSubmit(e)} className="btn waves-effect waves-light green accent-3">Login</Link>
+              <button type="submit" className="btn waves-effect waves-light green accent-3">Login</button>
             </div>
           </form>
           <Link to="/register" className="btn waves-effect waves-light accent-3">Register</Link>
