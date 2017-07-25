@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-materialize';
 import { Document } from '../../../backend/models/models';
+import NewDocModal from './NewDocModal';
 
 class DocPortal extends React.Component{
   constructor(props){
@@ -48,6 +49,7 @@ class DocPortal extends React.Component{
             }
           )}
         </ul>
+        <Button waves='light' href='/new-doc'>Click to create a new document<Icon left>create</Icon></Button>
       </div>
     );
   }
