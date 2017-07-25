@@ -6,10 +6,12 @@ import InlineStyleControls from './InlineStyleControls';
 import alignStyleMap from './customMaps/alignStyleMap';
 import colorStyleMap from './customMaps/colorStyleMap';
 import sizeStyleMap from './customMaps/sizeStyleMap';
+import fontStyleMap from './customMaps/fontStyleMap';
 import customStyleMap from './customMaps/customStyleMap';
 import AlignmentControls from './AlignmentControls';
 import ColorControls from './ColorControls';
 import SizeControls from './SizeControls';
+import FontControls from './FontControls';
 import styles from '../../assets/stylesheets/textEditor.scss';
 
 class TextEditor extends React.Component {
@@ -163,6 +165,36 @@ class TextEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
+  toggleFont(toggledFont) {
+    const {editorState} = this.state;
+    const selection = editorState.getSelection();
+    // Let's just allow one color at a time. Turn off all active colors.
+    const nextContentState = Object.keys(fontStyleMap)
+      .reduce((contentState, font) => {
+        return Modifier.removeInlineStyle(contentState, selection, font);
+      }, editorState.getCurrentContent());
+    let nextEditorState = EditorState.push(
+      editorState,
+      nextContentState,
+      'change-inline-style'
+    );
+    const currentStyle = editorState.getCurrentInlineStyle();
+    // Unset style override for current color.
+    if (selection.isCollapsed()) {
+      nextEditorState = currentStyle.reduce((state, font) => {
+        return RichUtils.toggleInlineStyle(state, font);
+      }, nextEditorState);
+    }
+    // If the color is being toggled on, apply it.
+    if (!currentStyle.has(toggledFont)) {
+      nextEditorState = RichUtils.toggleInlineStyle(
+        nextEditorState,
+        toggledFont
+      );
+    }
+    this.onChange(nextEditorState);
+  }
+
   render() {
     return (
       <div className="editorRoot">
@@ -183,6 +215,10 @@ class TextEditor extends React.Component {
           onToggle={this.toggleColor.bind(this)}
         />
         <SizeControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleSize.bind(this)}
+        />
+        <FontControls
           editorState={this.state.editorState}
           onToggle={this.toggleSize.bind(this)}
         />
