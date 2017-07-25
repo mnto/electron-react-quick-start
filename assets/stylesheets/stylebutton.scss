@@ -1,13 +1,103 @@
+@import "colors";
+
+.toolLine {
+  display: flex;
+  justify-content: space-between;
+}
 .styleButton {
-  color: #999;
+  background-color: $blue_gray;
+  color: $white;
   cursor: pointer;
-  margin-right: 16px;
+  margin: 5px 18px;
   padding: 2px 0;
   display: inline-block;
-  margin-left: 2px;
-  margin-right: 2px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border-radius: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
-
+.styleButton:hover{
+  background-color: $blue;
+}
 .activeButton {
-  color: #5890ff;
+  background-color: $blue;
+}
+#H1 {
+  font-size: 40px;
+  font-weight: 400;
+}
+#H2 {
+  font-size: 35px;
+  font-weight: 400;
+}
+#H3 {
+  font-size: 30px;
+  font-weight: 400;
+}
+#H4 {
+  font-size: 25px;
+  font-weight: 400;
+}
+#H5 {
+  font-size: 20px;
+  font-weight: 400;
+}
+#H6 {
+  font-size: 15px;
+  font-weight: 400;
+}
+#CodeBlock, #Monospace {
+  font-family: 'Courier New';
+}
+#tiny {
+  font-size: 10px;
+}
+#small {
+  font-size: 12px;
+}
+#normal {
+  font-size: 14px;
+}
+#medium {
+  font-size: 16px;
+}
+#large {
+  font-size: 18px;
+}
+#Red {
+  color: $red;
+}
+#Orange {
+  color: $orange;
+}
+#Yellow {
+  color: $yellow;
+}
+#Green {
+  color: $green;
+}
+#Blue {
+  color: $blue;
+}
+#Blue:hover {
+  color: $white;
+}
+#Indigo {
+  color: $indigo;
+}
+#Violet {
+  color: $violet;
+}
+#Arial {
+  font-family: 'Arial';
+}
+#Georgia {
+  font-family: 'Georgia';
+}
+#CourierNew {
+  font-family: 'Courier New';
+}
+#TimesNewRoman {
+  font-family: 'Times New Roman';
 }
