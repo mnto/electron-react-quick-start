@@ -1,7 +1,7 @@
 const { User, Document } = require('../models/models');
 var express = require('express');
 const router = express.Router();
-cost hashPassword = require('../helper/passwordHash');
+const hashPassword = require('../helper/passwordHash');
 
 //get all documents from user with userId
 //returns json object of docs user owns and docs s/he is collaborating on
@@ -20,6 +20,7 @@ router.get('/user/:userId', function(req, res) {
       });
     })
     .catch((err) => {
+      console.log(err);
       res.json({success: false});
     });
 });
@@ -30,6 +31,7 @@ router.get('/docs/:docId', (req, res)=> {
   .populate('owner')
   .exec((err, doc) => {
     if (err) {
+      console.log(err);
       res.json({ success: false });
     } else {
       res.json({success: true, doc: doc});
@@ -44,6 +46,7 @@ router.post('/docs/save/:docId', (req, res)=> {
   var text = req.body.text;
   Document.findOne({id: req.params.docId}, (err, doc) =>{
     if (err) {
+      console.log(err);
       res.json({success: false});
     } else {
       doc.text = text;
@@ -72,15 +75,32 @@ router.post('docs/new', (req, res) => {
     res.json({success: true, doc: doc});
   })
   .catch((err)=> {
+    console.log(err);
     res.json({success: false})
   })
 });
 
 //checkpassword route through query called password
-//hash here
+//queries: password and userid
 router.get('/docs/check/:docId', (req, res) => {
-  var pass = hash(req.query.password);
-  Document.findById(req.param.docid)
+  var pass = req.query.password;
+  Document.findById(req.params.docid, (err, doc) => {
+    if (err) {
+      console.log(err);
+      res.json({success: false})
+    }
+    else {
+      if (doc.password === pass) {
+        doc.collabs.push(req.query.userId); //add user as collaborator
+        doc.save();
+        res.json({success: true, doc: doc})
+      }
+      else {
+        console.log("ACCESS DENIED");
+        res.json({success: false})
+      }
+    }
+  })
 
 
 })
