@@ -1,7 +1,7 @@
 const { User, Document } = require('../models/models');
 var express = require('express');
 const router = express.Router();
-cost hashPassword = require('../helper/passwordHash');
+const hashPassword = require('../helper/passwordHash');
 
 //get all documents from user with userId
 //returns json object of docs user owns and docs s/he is collaborating on
