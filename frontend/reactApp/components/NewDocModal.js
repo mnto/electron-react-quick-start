@@ -1,5 +1,4 @@
 import React from 'react';
-import { Document } from '../../../backend/models/models';
 import axios from 'axios';
 import { Button } from 'react-materialize';
 
@@ -14,16 +13,16 @@ class NewDocModal extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    // axios.post('/login', {
-    //   username: this.state.username,
-    //   password: this.state.password
-    // })
-    // .then((resp) => {
-    //   console.log('success', resp);
-    // })
-    // .catch((err) => {
-    //   console.log('error logging in', err);
-    // });
+    axios.post('/new-doc', {
+      title: this.state.title,
+      password: this.state.password
+    })
+    .then((resp) => {
+      console.log('success', resp);
+    })
+    .catch((err) => {
+      console.log('error loging in', err);
+    });
   }
 
   onTitleChange(event) {
@@ -45,7 +44,6 @@ class NewDocModal extends React.Component {
         <Modal
           header='Modal Header'
           trigger={<Button waves='light'>Click to create document<Icon right>add</Icon></Button>}>
-          <p>
             <div className="row">
               <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
                 <div className="row">
@@ -57,11 +55,10 @@ class NewDocModal extends React.Component {
                     <i className="material-icons prefix">lock</i>
                     <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
                   </div>
-                  <input className="btn waves-effect waves-light green accent-3" type="submit" value="Login" />
+                  <input className="btn waves-effect waves-light green accent-3" type="submit" value="Create new document" />
                 </div>
               </form>
             </div>
-          </p>
         </Modal>
       </div>
     );

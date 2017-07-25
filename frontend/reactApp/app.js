@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import AppContainer from './components/AppContainer';
-import DocPortal from './components/DocPortal';
 
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
@@ -10,5 +9,5 @@ import DocPortal from './components/DocPortal';
 // .then(text => console.log(text))
 // .catch(err => {throw err})
 
-ReactDOM.render(<DocPortal />,
+ReactDOM.render(<AppContainer />,
    document.getElementById('root'));
