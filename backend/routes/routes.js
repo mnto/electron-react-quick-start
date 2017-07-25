@@ -34,3 +34,11 @@ router.post('/register', (req, res) => {
     }
   });
 });
+
+router.post('/login', (req, res) => {
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+  });
+
+})
