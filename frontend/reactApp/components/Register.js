@@ -10,25 +10,10 @@ class Register extends React.Component{
     };
   }
 
-  onSubmit() {
-    // const hashed = this.hashPassword(this.state.password);
-    // const newUser = new User({
-    //   username: this.state.username,
-    //   password: hashed
-    // });
-    //
-    // newUser.save()
-    // .then(() => {
-    //   this.setState({
-    //     username: '',
-    //     password: ''
-    //   });
-    // })
-    // .catch((err) => {
-    //   console.log("Error saving to database", err);
-    // });
-
-    fetch('/register', {
+  onSubmit(e) {
+    e.preventDefault();
+    console.log("IN REGISTER");
+    fetch('http://localhost:3000/register', {
       method: 'POST',
       body: JSON.stringify({
         username: this.state.username,
@@ -37,7 +22,7 @@ class Register extends React.Component{
       headers: {
         "Content-Type": "application/json"
       },
-    })
+    });
 
   }
 
@@ -56,17 +41,17 @@ class Register extends React.Component{
   render(){
     return(
         <div className="row">
-          <form className="col s12" onSubmit={() => this.onSubmit()} method="POST" action="/register">
+          <form className="col s12" onSubmit={(e) => this.onSubmit(e)} method="POST" action="/register">
             <div className="row">
               <div className="input-field col s6">
                 <i className="material-icons prefix">account_box</i>
                 <input id="icon_prefix" type="text" className="validate" onChange={(e) => this.handleUsernameChange(e)} />
-                <label for="icon_prefix">Username</label>
+                <label htmlFor="icon_prefix">Username</label>
               </div>
               <div className="input-field col s6">
                 <i className="material-icons prefix">lock</i>
                 <input id="icon_telephone" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)} />
-                <label for="icon_telephone">Password</label>
+                <label htmlFor="icon_telephone">Password</label>
               </div>
             </div>
             <div>
@@ -76,7 +61,7 @@ class Register extends React.Component{
               </button>
             </div>
           </form>
-           <a class="waves-effect btn-flat" href="/login">Back to login</a>
+           <a className="waves-effect btn-flat" href="/login">Back to login</a>
         </div>
     );
   }
