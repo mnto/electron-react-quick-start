@@ -32,6 +32,7 @@ var auth = (passport) => {
   });
 
   router.post('/register', (req, res) => {
+    console.log('HELLO HERE IN REG')
     const password = hashPassword(req.body.password);
 
     const newUser = new User({
