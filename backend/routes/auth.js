@@ -22,6 +22,12 @@ var auth = (passport) => {
     res.json({user: req.user});
   });
 
+  router.get('/userID', (req, res) => {
+    const session = JSON.parse(req.session);
+    const id = session.passport.user;
+    res.send({ id });
+  })
+
   // GET Logout page
   router.get('/logout', (req, res) => {
     req.logout();
