@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-materialize';
-import NewDocModal from './NewDocModal';
+
 
 class DocPortal extends React.Component{
   constructor(props){
