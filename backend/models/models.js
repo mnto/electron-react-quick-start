@@ -13,7 +13,11 @@ const userSchema = mongoose.Schema({
 
 const documentSchema = mongoose.Schema({
   collaborators: Array,
-  text: String
+  text: String,
+  password: {
+    type: String,
+    required: true
+  }
 });
 
 const User = mongoose.model('User', userSchema);

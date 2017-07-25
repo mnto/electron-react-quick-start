@@ -1,9 +1,9 @@
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './reactApp/app.js',
+  entry: './frontend/reactApp/app.js',
   output: {
-    path: __dirname + '/build',
+    path: __dirname + '/frontend/build',
     filename: 'app.bundle.js'
   },
   module: {
