@@ -1,8 +1,8 @@
 import React from 'react';
 import StyleButton from './StyleButton';
 
-var SIZES = [
-  {label: 'tiny', style: 'extra-small'},
+const SIZES = [
+  {label: 'tiny', style: 'tiny'},
   {label: 'small', style: 'small'},
   {label: 'normal', style: 'normal'},
   {label: 'medium', style: 'medium'},
@@ -15,6 +15,7 @@ const SizeControls = (props) => {
     <div className="controls">
       {SIZES.map(type =>
         <StyleButton
+          key={type.label}
           active={currentStyle.has(type.style)}
           label={type.label}
           onToggle={props.onToggle}

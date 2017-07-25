@@ -1,18 +1,18 @@
 const sizeStyleMap = {
-  'extra-small': {
-    'font-size': '8px',
+  'tiny': {
+    'fontSize': '8px',
   },
   small: {
-    'font-size': '10px',
+    'fontSize': '10px',
   },
   normal: {
-    'font-size': '12px',
+    'fontSize': '12px',
   },
   medium: {
-    'font-size': '14px',
+    'fontSize': '14px',
   },
   large: {
-    'font-size': '16px',
+    'fontSize': '16px',
   }
 };
 
