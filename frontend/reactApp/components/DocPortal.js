@@ -8,31 +8,38 @@ class DocPortal extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      userId: null,
       ownDocs: [],
       collabDocs: []
     };
   }
 
   componentDidMount(){
-    axios.get('/user/'+this.props.userId)
-    .then((response) => response.json())
-    .then(jsonResp => {
-      const ownDocs = jsonResp.ownDocs;
-      const collabDocs = jsonResp.collaborating;
-
-      this.setState({
-        ownDocs,
-        collabDocs
+    axios.get('http://localhost:3000/userID')
+    .then((resp) => {
+      this.setState({userId:resp.id});
+      axios.get('http://localhost:3000/user/' + this.state.userId)
+      .then((response) => response.json())
+      .then(jsonResp => {
+        const ownDocs = jsonResp.ownDocs;
+        const collabDocs = jsonResp.collaborating;
+        this.setState({
+          ownDocs,
+          collabDocs
+        });
+      })
+      .catch((err) => {
+        console.log("error finding documents", err);
       });
     })
-    .catch((err) => {
-      console.log("error finding documents", err);
-    });
   }
 
   render(){
     return(
       <div>
+        <div>
+          <a href="/logout" className="waves-effect waves-light btn"><i class="material-icons right">directions_run</i>Logout</a>
+        </div>
         <div>
           <h4>Your documents</h4>
           <ul>
@@ -53,7 +60,7 @@ class DocPortal extends React.Component{
             )}
           </ul>
         </div>
-        <NewDocModal />
+        <NewDocModal id={this.state.userId}/>
       </div>
     );
   }
