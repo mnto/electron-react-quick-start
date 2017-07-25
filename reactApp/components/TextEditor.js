@@ -74,11 +74,7 @@ class TextEditor extends React.Component {
     );
   }
 
-<<<<<<< HEAD
-  toggleAlign(toggledAlign) {
-=======
   toggleAlign(toggledAlignment) {
->>>>>>> af6bd7dd41531ff8f64a530d904e970e0f135ebb
     const {editorState} = this.state;
     const selection = editorState.getSelection();
     // Let's just allow one color at a time. Turn off all active colors.
