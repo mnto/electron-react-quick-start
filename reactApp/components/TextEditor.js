@@ -8,12 +8,9 @@ import InlineStyleControls from './InlineStyleControls';
 class TextEditor extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       editorState: EditorState.createEmpty()
     };
-
-    //when something in the editor changes
     this.onChange = (editorState) =>
       this.setState({editorState});
 
@@ -39,38 +36,11 @@ class TextEditor extends React.Component {
     return false;
   }
 
-  //on tab event
-  onTab(e) {
-    const depth = 4;
-    this.onChange(RichUtils.onTab(e, this.state.editorState, depth));
-  }
-
-  //toggles block type
-  toggleBlockType(blockType) {
-    this.onChange(
-      RichUtils.toggleBlockType(
-        this.state.editorState,
-        blockType
-      )
-    );
-  }
-
-  //toggles inline styles
-  toggleInlineStyle(inlineStyle) {
-    this.onChange(
-      RichUtils.toggleInlineStyle(
-        this.state.editorState,
-        inlineStyle
-      )
-    );
-  }
-
-
 
   render() {
     return (
       <div className="editorRoot">
-        <BlockStyleControls
+        {/* <BlockStyleControls
           editorState={this.state.editorState}
           onToggle={this.toggleBlockType.bind(this)}
         />
@@ -86,10 +56,8 @@ class TextEditor extends React.Component {
             onChange={this.onChange}
             onTab={this.onTab.bind(this)}
             ref="editor"
-          />
+          /> */}
         </div>
-      </div>
-
     );
   }
 }
