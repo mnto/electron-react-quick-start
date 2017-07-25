@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-materialize';
 
+
 class DocPortal extends React.Component{
   constructor(props){
     super(props);
@@ -31,23 +32,27 @@ class DocPortal extends React.Component{
   render(){
     return(
       <div>
-        <h4>Your documents</h4>
-        <ul>
-          {this.state.ownDocs.map(
-            (doc) => {
-              return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
-            }
-          )}
-        </ul>
-        <ul>
+        <div>
+          <h4>Your documents</h4>
+          <ul>
+            {this.state.ownDocs.map(
+              (doc) => {
+                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+              }
+            )}
+          </ul>
+        </div>
+        <div>
           <h4>Collaborating documents</h4>
-          {this.state.collabDocs.map(
-            (doc) => {
-              return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
-            }
-          )}
-        </ul>
-        <Button waves='light' href='/new-doc'>Click to create a new document<Icon left>create</Icon></Button>
+          <ul>
+            {this.state.collabDocs.map(
+              (doc) => {
+                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+              }
+            )}
+          </ul>
+        </div>
+        <NewDocModal />
       </div>
     );
   }
