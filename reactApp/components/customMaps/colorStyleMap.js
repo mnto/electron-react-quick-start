@@ -1,24 +1,24 @@
 const colorStyleMap = {
   red: {
-    color: 'rgba(255, 0, 0, 1.0)',
+    color: '#f44336',
   },
   orange: {
-    color: 'rgba(255, 127, 0, 1.0)',
+    color: '#ff9800',
   },
   yellow: {
-    color: 'rgba(180, 180, 0, 1.0)',
+    color: '#ffeb3b',
   },
   green: {
-    color: 'rgba(0, 180, 0, 1.0)',
+    color: '#00c853',
   },
   blue: {
-    color: 'rgba(0, 0, 255, 1.0)',
+    color: '#2196f3',
   },
   indigo: {
-    color: 'rgba(75, 0, 130, 1.0)',
+    color: '#3f51b5',
   },
   violet: {
-    color: 'rgba(127, 0, 255, 1.0)',
+    color: '#6a1b9a',
   },
 };
 

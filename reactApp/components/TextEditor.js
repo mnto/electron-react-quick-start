@@ -1,16 +1,18 @@
 import React from 'react';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
-import styles from '../../assets/stylesheets/textEditor.scss'
 import BlockStyleControls from './BlockStyleControls';
 import InlineStyleControls from './InlineStyleControls';
-import AlignmentControls from './AlignmentControls';
-
-import customStyleMap from './customMaps/customStyleMap';
-import sizeStyleMap from './customMaps/sizeStyleMap';
 import alignStyleMap from './customMaps/alignStyleMap';
 import colorStyleMap from './customMaps/colorStyleMap';
-
+import sizeStyleMap from './customMaps/sizeStyleMap';
+import fontStyleMap from './customMaps/fontStyleMap';
+import customStyleMap from './customMaps/customStyleMap';
+import AlignmentControls from './AlignmentControls';
+import ColorControls from './ColorControls';
+import SizeControls from './SizeControls';
+import FontControls from './FontControls';
+import styles from '../../assets/stylesheets/textEditor.scss';
 
 class TextEditor extends React.Component {
   constructor(props) {
@@ -72,14 +74,18 @@ class TextEditor extends React.Component {
     );
   }
 
+<<<<<<< HEAD
   toggleAlign(toggledAlign) {
+=======
+  toggleAlign(toggledAlignment) {
+>>>>>>> af6bd7dd41531ff8f64a530d904e970e0f135ebb
     const {editorState} = this.state;
     const selection = editorState.getSelection();
-    // Let’s just allow one color at a time. Turn off all active colors.
+    // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(alignStyleMap)
-    .reduce((contentState, a) => {
-      return Modifier.removeInlineStyle(contentState, selection, a);
-    }, editorState.getCurrentContent());
+      .reduce((contentState, alignment) => {
+        return Modifier.removeInlineStyle(contentState, selection, alignment);
+      }, editorState.getCurrentContent());
     let nextEditorState = EditorState.push(
       editorState,
       nextContentState,
@@ -88,29 +94,29 @@ class TextEditor extends React.Component {
     const currentStyle = editorState.getCurrentInlineStyle();
     // Unset style override for current color.
     if (selection.isCollapsed()) {
-      nextEditorState = currentStyle.reduce((state, a) => {
-        return RichUtils.toggleInlineStyle(state, a);
+      nextEditorState = currentStyle.reduce((state, alignment) => {
+        return RichUtils.toggleInlineStyle(state, alignment);
       }, nextEditorState);
     }
     // If the color is being toggled on, apply it.
-    if (!currentStyle.has(toggledAlign)) {
+    if (!currentStyle.has(toggledAlignment)) {
       nextEditorState = RichUtils.toggleInlineStyle(
         nextEditorState,
-        toggledAlign
+        toggledAlignment
       );
     }
-    console.log(currentStyle);
     this.onChange(nextEditorState);
   }
 
   toggleColor(toggledColor) {
+    console.log('color', colorStyleMap);
     const {editorState} = this.state;
     const selection = editorState.getSelection();
     // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(colorStyleMap)
-    .reduce((contentState, color) => {
-      return Modifier.removeInlineStyle(contentState, selection, color);
-    }, editorState.getCurrentContent());
+      .reduce((contentState, color) => {
+        return Modifier.removeInlineStyle(contentState, selection, color);
+      }, editorState.getCurrentContent());
     let nextEditorState = EditorState.push(
       editorState,
       nextContentState,
@@ -138,10 +144,9 @@ class TextEditor extends React.Component {
     const selection = editorState.getSelection();
     // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(sizeStyleMap)
-    .reduce((contentState, size) => {
-      return Modifier.removeInlineStyle(contentState, selection, size);
-    }, editorState.getCurrentContent());
-    console.log('nextContentState', nextContentState);
+      .reduce((contentState, size) => {
+        return Modifier.removeInlineStyle(contentState, selection, size);
+      }, editorState.getCurrentContent());
     let nextEditorState = EditorState.push(
       editorState,
       nextContentState,
@@ -164,7 +169,35 @@ class TextEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
-
+  toggleFont(toggledFont) {
+    const {editorState} = this.state;
+    const selection = editorState.getSelection();
+    // Let's just allow one color at a time. Turn off all active colors.
+    const nextContentState = Object.keys(fontStyleMap)
+      .reduce((contentState, font) => {
+        return Modifier.removeInlineStyle(contentState, selection, font);
+      }, editorState.getCurrentContent());
+    let nextEditorState = EditorState.push(
+      editorState,
+      nextContentState,
+      'change-inline-style'
+    );
+    const currentStyle = editorState.getCurrentInlineStyle();
+    // Unset style override for current color.
+    if (selection.isCollapsed()) {
+      nextEditorState = currentStyle.reduce((state, font) => {
+        return RichUtils.toggleInlineStyle(state, font);
+      }, nextEditorState);
+    }
+    // If the color is being toggled on, apply it.
+    if (!currentStyle.has(toggledFont)) {
+      nextEditorState = RichUtils.toggleInlineStyle(
+        nextEditorState,
+        toggledFont
+      );
+    }
+    this.onChange(nextEditorState);
+  }
 
   render() {
     return (
@@ -181,15 +214,27 @@ class TextEditor extends React.Component {
           editorState={this.state.editorState}
           onToggle={this.toggleAlign.bind(this)}
         />
+        <ColorControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleColor.bind(this)}
+        />
+        <SizeControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleSize.bind(this)}
+        />
+        <FontControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleSize.bind(this)}
+        />
         <div className="editor" onClick={this.focus}>
           <Editor
             handleKeyCommand={this.handleKeyCommand.bind(this)}
+            customStyleMap={customStyleMap}
             keyBindingFn={this.keyBindingFn.bind(this)}
             editorState={this.state.editorState}
             onChange={this.onChange}
             onTab={this.onTab.bind(this)}
             ref="editor"
-            customStyleMap={customStyleMap}
           />
         </div>
       </div>

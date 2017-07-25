@@ -1,15 +1,15 @@
 const alignStyleMap = {
   'left': {
     'display': 'block',
-    'text-align': 'left'
+    'textAlign': 'left'
   },
   'right': {
     'display': 'block',
-    'text-align': 'right'
+    'textAlign': 'right'
   },
   'center': {
     'display': 'block',
-    'text-align': 'center'
+    'textAlign': 'center'
   }
 };
 
