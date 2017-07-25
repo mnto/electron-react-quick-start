@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-// import { Row, Input, Icon } from 'react-materialize';
+import { Materialize } from 'react-materialize';
 import { Link } from 'react-router-dom';
 
 class Register extends React.Component{
@@ -37,6 +37,10 @@ class Register extends React.Component{
     this.setState({
       password: event.target.value
     });
+  }
+
+  componentDidMount(){
+    Materialize.updateTextFields();
   }
 
   render(){
