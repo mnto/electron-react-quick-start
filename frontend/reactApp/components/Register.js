@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import User from '../../backend/models/models';
 
 class Register extends React.Component{
   constructor(props){
@@ -11,9 +10,7 @@ class Register extends React.Component{
     };
   }
 
-
-
-  onSubmit = () => {
+  onSubmit() {
     // const hashed = this.hashPassword(this.state.password);
     // const newUser = new User({
     //   username: this.state.username,
@@ -44,11 +41,11 @@ class Register extends React.Component{
 
   }
 
-  handleUsernameChange = (event) => {
+  handleUsernameChange(event) {
     this.setState({
       username: event.target.value
     });
-  };
+  }
 
   handlePasswordChange(event){
     this.setState({

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-// const  { Document } = require( '../models/models');
+var Document = require('../models/models');
 
 // router.post('/register', (req, res) => {
 //   const username = req.body.username;
@@ -50,3 +49,4 @@ router.post('/save-doc', (req, res) => {
 });
 
 module.exports = router;
+

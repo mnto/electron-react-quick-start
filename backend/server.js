@@ -25,11 +25,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //passport setup
 app.use(session({
-  secret: process.env.SECRET,
-  cookie: {
-    // In milliseconds, i.e., five minutes
-    maxAge: 1000 * 60 * 5
-  },
+  secret: 'HELLO MY NAME IS BOB',
+  // cookie: {
+  //   // In milliseconds, i.e., five minutes
+  //   maxAge: 1000 * 60 * 5
+  // },
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({mongooseConnection: mongoose.connection})
