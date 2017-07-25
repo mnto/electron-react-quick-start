@@ -43,6 +43,8 @@ import  { Document } from '../models/models';
 
 router.post('/new-doc', (req, res) => {
 
-})
+});
 
-router.post('/save-doc')
+router.post('/save-doc', (req, res) => {
+
+});

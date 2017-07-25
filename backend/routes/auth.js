@@ -8,8 +8,9 @@ const hashPassword = require('../helper/passwordHash');
 auth = (passport) => {
 
   // GET Login page
-  router.get('/login', function(req, res) {
+  router.get('/', function(req, res) {
     // res.render('login');
+    res.send({message: "Should be on login page"});
   });
 
   // POST Login page
@@ -31,24 +32,22 @@ auth = (passport) => {
   });
 
   router.post('/register', (req, res) => {
-    const password;
-    // Unhashed version
-    // password = req.body.password;
-    // Hashed version
-    password = hashPassword(req.body.password);
+    const password = hashPassword(req.body.password);
 
-    const u = new User({
+    const newUser = new User({
       username: req.body.username,
       password: password
     });
-    u.save((err, user) => {
-      if (err) {
-        console.log(err);
-        res.status(500).redirect('/register');
-        return;
-      }
+
+    newUser.save()
+    .then((user)=>{
       console.log(user);
+      res.send({success: true});
       res.redirect('/login');
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.status(500).redirect('/register');
     });
   });
 
