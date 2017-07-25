@@ -10,6 +10,7 @@ import customStyleMap from './customMaps/customStyleMap';
 import AlignmentControls from './AlignmentControls';
 import ColorControls from './ColorControls';
 import SizeControls from './SizeControls';
+import styles from '../../assets/stylesheets/textEditor.scss';
 
 class TextEditor extends React.Component {
   constructor(props) {
