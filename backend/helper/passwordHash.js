@@ -6,6 +6,5 @@ const hashPassword = (password) => {
   return hash.digest('hex');
 };
 
-module.exports = {
-  hashPassword: hashPassword
-};
+module.exports = hashPassword;
+

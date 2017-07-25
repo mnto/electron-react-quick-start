@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
 var Document = require('../models/models');
 
 // router.post('/register', (req, res) => {
@@ -49,6 +48,5 @@ router.post('/save-doc', (req, res) => {
 
 });
 
-module.exports = {
-  router: router
-};
+module.exports = router;
+
