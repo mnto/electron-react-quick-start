@@ -6,4 +6,4 @@ hashPassword = (password) => {
   return hash.digest('hex');
 }
 
-export default hashPassword;
+module.exports = hashPassword;

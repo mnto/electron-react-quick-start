@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 
 const userSchema = mongoose.Schema({
@@ -10,21 +10,26 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  collaborating: Array //shared documents (save by doc id)
 });
 
 const documentSchema = mongoose.Schema({
-  collaborators: Array, //array of users who've accessed the doc
+  title: String,
+  collabs: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User'
+    }
+  ], //array of users who've accessed the doc
   text: String, //actual text of document
   dateCreated: Date,
   owner: {
-    type: Schema.ObjectId,
+    type: mongoose.Schema.ObjectId,
     ref: 'User'
   },
   password: String
 });
 
 const User = mongoose.model('User', userSchema);
-const Document = mongoose.model('User', documentSchema);
+const Document = mongoose.model('Document', documentSchema);
 
-export { User, Document };
+module.exports = { User, Document };
