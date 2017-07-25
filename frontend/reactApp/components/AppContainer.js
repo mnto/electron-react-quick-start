@@ -12,7 +12,7 @@ class AppContainer extends React.Component {
       <HashRouter history={hashHistory}>
         <Switch>
             <Route exact={true} path="/register" component={Register}/>
-            {/* <Route exact={true} path="/documents" component={DocPortal}/> */}
+            <Route exact={true} path="/documents" component={DocPortal}/>
             <Route exact={true} path="/documents/:documentId" component={DocLanding}/>
             <Route exact={true} path="/" component={Login}/>
             <Route render={() => <h1>404, Sorry fam.</h1>} />

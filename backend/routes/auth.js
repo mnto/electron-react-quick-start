@@ -18,6 +18,10 @@ var auth = (passport) => {
     res.redirect('/');
   });
 
+  router.get('/user/logged-in', (req, res) => {
+    res.json({user: req.user});
+  });
+
   // GET Logout page
   router.get('/logout', (req, res) => {
     req.logout();

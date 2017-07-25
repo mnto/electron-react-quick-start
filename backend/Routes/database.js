@@ -102,5 +102,4 @@ router.get('/docs/check/:docId', (req, res) => {
   });
 });
 
-
 module.exports = router;

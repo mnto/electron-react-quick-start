@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-// import { Row, Input, Icon } from 'react-materialize';
+import { Materialize } from 'react-materialize';
 import { Link } from 'react-router-dom';
 
 class Register extends React.Component{
@@ -56,9 +56,10 @@ class Register extends React.Component{
               </div>
             </div>
             <div>
-              Register
-              <i className="material-icons right">send</i>
-              <input className="btn waves-effect waves-light green accent-3" type="submit" name="action"/>
+              <button className="btn waves-effect waves-light green accent-3" type="submit" name="action">
+                <i className="material-icons right">send</i>
+                Register!
+              </button>
             </div>
           </form>
            <Link className="waves-effect btn-flat" to="/">Back to login</Link>
