@@ -5,8 +5,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 import { User } from './models/models';
 import hashPassword from './helper/passwordHash';
+
 // import passportConnect from './helper/passportConnect';
-const api = require('./routes/routes')
+
+// import API routes
+const routes = require('./routes/routes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,7 +26,8 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
-app.use('/', api);
+app.use('/', auth(passport));
+app.use('/', routes);
 
 
 

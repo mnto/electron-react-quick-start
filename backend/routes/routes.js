@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const session = require('express-session');
 import { User, Document } from '../models/models';
+const passport = require('passport');
+import hashPassword from '../helper/passwordHash';
+
+// passport middleware
+// PASSPORT MIDDLEWARE HERE
+router.use(passport.initialize());
+router.use(passport.session());
+
 
 router.post('/register', (req, res) => {
   const username = req.body.username;
@@ -34,3 +43,8 @@ router.post('/register', (req, res) => {
     }
   });
 });
+
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login'
+}));
