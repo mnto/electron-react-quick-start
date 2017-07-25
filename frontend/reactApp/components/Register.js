@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+// import { Row, Input, Icon } from 'react-materialize';
+import { Link } from 'react-router-dom';
 
 class Register extends React.Component{
   constructor(props){
@@ -11,33 +13,17 @@ class Register extends React.Component{
   }
 
   onSubmit() {
-    // const hashed = this.hashPassword(this.state.password);
-    // const newUser = new User({
-    //   username: this.state.username,
-    //   password: hashed
-    // });
-    //
-    // newUser.save()
-    // .then(() => {
-    //   this.setState({
-    //     username: '',
-    //     password: ''
-    //   });
-    // })
-    // .catch((err) => {
-    //   console.log("Error saving to database", err);
-    // });
 
-    fetch('/register', {
-      method: 'POST',
-      body: JSON.stringify({
+    axios.post('/register', {
         username: this.state.username,
         password: this.state.password
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      },
-    })
+      })
+      .then(() => {
+        console.log("Going to registration page!");
+      })
+      .catch((err) => {
+        console.log("Error with registration", err);
+      });
 
   }
 
@@ -59,14 +45,14 @@ class Register extends React.Component{
           <form className="col s12" onSubmit={() => this.onSubmit()} method="POST" action="/register">
             <div className="row">
               <div className="input-field col s6">
-                <i className="material-icons prefix">account_box</i>
-                <input id="icon_prefix" type="text" className="validate" onChange={(e) => this.handleUsernameChange(e)} />
-                <label for="icon_prefix">Username</label>
+                {/* <i className="material-icons prefix">account_box</i> */}
+                <input id="username" type="text" className="validate" onChange={(e) => this.handleUsernameChange(e)} />
+                <label for="username">Username</label>
               </div>
               <div className="input-field col s6">
-                <i className="material-icons prefix">lock</i>
-                <input id="icon_telephone" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)} />
-                <label for="icon_telephone">Password</label>
+                {/* <i className="material-icons prefix">lock</i> */}
+                <input id="password" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)} />
+                <label for="password">Password</label>
               </div>
             </div>
             <div>
@@ -76,7 +62,7 @@ class Register extends React.Component{
               </button>
             </div>
           </form>
-           <a class="waves-effect btn-flat" href="/login">Back to login</a>
+           <Link className="waves-effect btn-flat" to="/">Back to login</Link>
         </div>
     );
   }
