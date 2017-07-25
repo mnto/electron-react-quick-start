@@ -27,7 +27,7 @@ class Register extends React.Component{
     // .catch((err) => {
     //   console.log("Error saving to database", err);
     // });
-
+    console.log("HELLO IN ON SUBMIT");
     fetch('/register', {
       method: 'POST',
       body: JSON.stringify({
@@ -60,16 +60,12 @@ class Register extends React.Component{
             <div className="row">
               <div className="input-field col s6">
                 <i className="material-icons prefix">account_box</i>
-<<<<<<< HEAD
                 <input id="icon_prefix" type="text" className="validate" onChange={(e) => this.handleUsernameChange(e)}/>
-=======
-                <input id="icon_prefix" type="text" className="validate" onChange={(e) => this.handleUsernameChange(e)} />
->>>>>>> e1979f0863570c9e7bc09baa693fdcfcd40b0bb9
                 <label for="icon_prefix">Username</label>
               </div>
               <div className="input-field col s6">
+                <label for="icon_telephone">Password</label>
                 <i className="material-icons prefix">lock</i>
-<<<<<<< HEAD
                 <input id="icon_telephone" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)}/>
               </div>
             </div>
@@ -77,17 +73,6 @@ class Register extends React.Component{
               Register
               <i className="material-icons right">send</i>
               <input className="btn waves-effect waves-light green accent-3" type="submit" name="action"/>
-=======
-                <input id="icon_telephone" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)} />
-                <label for="icon_telephone">Password</label>
-              </div>
-            </div>
-            <div>
-              <button className="btn waves-effect waves-light green accent-3" type="submit" name="action">
-                Register
-                <i className="material-icons right">send</i>
-              </button>
->>>>>>> e1979f0863570c9e7bc09baa693fdcfcd40b0bb9
             </div>
           </form>
            <a class="waves-effect btn-flat" href="/login">Back to login</a>
