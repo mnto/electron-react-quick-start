@@ -72,7 +72,6 @@ class TextEditor extends React.Component {
     );
   }
 
-
   toggleAlign(toggledAlign) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
