@@ -7,11 +7,11 @@ const LocalStrategy = require('passport-local').Strategy;
 
 
 // import API routes
-const routes = require('./routes/routes');
+const routes = require('./routes/routes').router;
 const auth = require('./routes/auth');
 
-import { User } from './models/models';
-import hashPassword from './helper/passwordHash';
+var User = require('./models/models').User;
+var hashPassword = require('./helper/passwordHash');
 
 const app = express();
 
@@ -27,11 +27,11 @@ mongoose.connect(connect);
 
 //passport setup
 app.use(session({
-  secret: process.env.SECRET,
-  cookie: {
-    // In milliseconds, i.e., five minutes
-    maxAge: 1000 * 60 * 5
-  },
+  secret: 'HELLO MY NAME IS BOB',
+  // cookie: {
+  //   // In milliseconds, i.e., five minutes
+  //   maxAge: 1000 * 60 * 5
+  // },
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({mongooseConnection: mongoose.connection})

@@ -1,23 +1,23 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Login from './Login.js';
-import Register from './Register.js';
-import DocPortal from './DocPortal.js';
-import DocLanding from './DocLanding.js';
-import Home from './Home.js';
+import { HashRouter, Route, Switch, hashHistory } from 'react-router-dom';
+import Login from './Login';
+import Register from './Register';
+import DocPortal from './DocPortal';
+import DocLanding from './DocLanding';
 
 class AppContainer extends React.Component {
   render() {
+    console.log('app container');
     return (
-      <BrowserRouter>
+      <HashRouter history={hashHistory}>
         <Switch>
-            <Route exact={true} path="/" component={Login}/>
             <Route exact={true} path="/register" component={Register}/>
-            <Route exact={true} path="/documents" component={DocPortal}/>
+            {/* <Route exact={true} path="/documents" component={DocPortal}/> */}
             <Route exact={true} path="/documents/:documentId" component={DocLanding}/>
+            <Route exact={true} path="/" component={Login}/>
             <Route render={() => <h1>404, Sorry fam.</h1>} />
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
