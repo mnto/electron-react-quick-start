@@ -17,9 +17,12 @@ import styles from '../../assets/stylesheets/textEditor.scss';
 class TextEditor extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       editorState: EditorState.createEmpty()
     };
+
+    //when something in the editor changes
     this.onChange = (editorState) =>
       this.setState({editorState});
 
@@ -195,7 +198,7 @@ class TextEditor extends React.Component {
   render() {
     return (
       <div className="editorRoot">
-        {/* <BlockStyleControls
+        <BlockStyleControls
           editorState={this.state.editorState}
           onToggle={this.toggleBlockType.bind(this)}
         />
@@ -228,8 +231,10 @@ class TextEditor extends React.Component {
             onChange={this.onChange}
             onTab={this.onTab.bind(this)}
             ref="editor"
-          /> */}
+          />
         </div>
+      </div>
+
     );
   }
 }
