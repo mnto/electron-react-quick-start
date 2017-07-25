@@ -54,4 +54,3 @@ var auth = (passport) => {
   return router;
 };
 module.exports = auth;
-
