@@ -53,8 +53,7 @@ router.post('/docs/save/:docId', (req, res)=> {
       doc.save();
       res.json({success: true, doc: doc});
     }
-  })
-
+  });
 });
 
 //create a new documnet
@@ -69,15 +68,15 @@ router.post('docs/new', (req, res) => {
     owner: owner,
     dateCreated: new Date(),
     password: password,
-  })
+  });
   newDoc.save()
   .then((doc) => {
     res.json({success: true, doc: doc});
   })
   .catch((err)=> {
     console.log(err);
-    res.json({success: false})
-  })
+    res.json({success: false});
+  });
 });
 
 //checkpassword route through query called password
@@ -87,23 +86,21 @@ router.get('/docs/check/:docId', (req, res) => {
   Document.findById(req.params.docid, (err, doc) => {
     if (err) {
       console.log(err);
-      res.json({success: false})
+      res.json({success: false});
     }
     else {
       if (doc.password === pass) {
         doc.collabs.push(req.query.userId); //add user as collaborator
         doc.save();
-        res.json({success: true, doc: doc})
+        res.json({success: true, doc: doc});
       }
       else {
         console.log("ACCESS DENIED");
-        res.json({success: false})
+        res.json({success: false});
       }
     }
-  })
-
-
-})
+  });
+});
 
 
 module.exports = router;
