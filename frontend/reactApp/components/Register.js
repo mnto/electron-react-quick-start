@@ -28,16 +28,16 @@ class Register extends React.Component{
     //   console.log("Error saving to database", err);
     // });
 
-    axios.post('/register', {
-      username: this.state.username,
-      password: this.state.password
+    fetch('/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: this.state.username,
+        password: this.state.password
+      }),
+      headers: {
+        "Content-Type": "application/json"
+      },
     })
-    .then((response) => {
-      console.log('success', response);
-    })
-    .catch((error) => {
-      console.log("ERROR WITH REGISTRATION", error);
-    });
 
   }
 
