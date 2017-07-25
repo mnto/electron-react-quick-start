@@ -1,7 +1,7 @@
 const { User, Document } = require('../models/models');
 var express = require('express');
 const router = express.Router();
-cost hashPassword = require('../helper/passwordHash');
+const hashPassword = require('../helper/passwordHash');
 
 //get all documents from user with userId
 //returns json object of docs user owns and docs s/he is collaborating on
@@ -57,7 +57,7 @@ router.post('/docs/save/:docId', (req, res)=> {
 //create a new documnet
 //returns the whole document object
 //are the passwords hashed already?
-router.post('docs/new', (req, res) => {
+router.post('/docs/new', (req, res) => {
   var password = hashPassword(req.body.password);
   var title = req.body.title;
   var owner = req.body.owner; //user id

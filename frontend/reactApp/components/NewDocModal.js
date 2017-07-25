@@ -13,9 +13,10 @@ class NewDocModal extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    axios.post('/new-doc', {
+    axios.post('/docs/new', {
       title: this.state.title,
-      password: this.state.password
+      password: this.state.password,
+      owner: this.props.owner
     })
     .then((resp) => {
       console.log('success', resp);
