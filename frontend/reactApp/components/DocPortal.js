@@ -52,7 +52,9 @@ class DocPortal extends React.Component{
       const collabDocs = response.data.collaborating;
       this.setState({
         ownDocs,
-        collabDocs
+        collabDocs,
+        shareDocId: '',
+        shareDocPwd: ''
       });
     })
     .catch((err) => {
