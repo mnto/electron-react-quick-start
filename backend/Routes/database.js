@@ -3,10 +3,9 @@ var express = require('express');
 const router = express.Router();
 const hashPassword = require('../helper/passwordHash');
 
-//get all documents from user with userId
-//returns json object of docs user owns and docs s/he is collaborating on
+// GET all documents for logged-in user
+// Returns json object with documents user owns is collaborating on.
 router.get('/user/:userId', function(req, res) {
-  console.log('database:', req.params.userId);
   var promises = [
     Document.find({owner: req.params.userId}),
     Document.find({ collabs: { "$in" : [req.params.userId]} })
@@ -25,7 +24,9 @@ router.get('/user/:userId', function(req, res) {
     });
 });
 
-//gets the document with that doc id
+// GET specific document
+// Retrieves a specific document from the document and passes the information
+// as a JSON object to the Document Landing Page component.
 router.get('/docs/:docId', (req, res)=> {
   Document.findOne({id: req.params.docId})
   .populate('owner')
@@ -39,9 +40,8 @@ router.get('/docs/:docId', (req, res)=> {
   });
 });
 
-//save document
-//front end will send text
-//returns back the doc
+// POST save document
+// Saves the document's text and returns a JSON object with the same document
 router.post('/docs/save/:docId', (req, res)=> {
   var text = req.body.text;
   Document.findOne({id: req.params.docId}, (err, doc) =>{
@@ -56,9 +56,10 @@ router.post('/docs/save/:docId', (req, res)=> {
   });
 });
 
-//create a new documnet
-//returns the whole document object
-//are the passwords hashed already?
+//TODO: decide - are the passwords hashed already?
+// POST create new document
+// Creates a new document in database with title and password entered from New Document Modal
+// Returns a document object upon success
 router.post('docs/new', (req, res) => {
   var password = hashPassword(req.body.password);
   var title = req.body.title;
@@ -81,9 +82,10 @@ router.post('docs/new', (req, res) => {
 
 //checkpassword route through query called password
 //queries: password and userid
+// GET check document password
 router.get('/docs/check/:docId', (req, res) => {
   var pass = req.query.password;
-  Document.findById(req.params.docid, (err, doc) => {
+  Document.findById(req.params.docId, (err, doc) => {
     if (err) {
       console.log(err);
       res.json({success: false});
