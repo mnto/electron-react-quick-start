@@ -1,17 +1,18 @@
 import React from 'react';
 import StyleButton from './StyleButton';
+import styles from '../../assets/stylesheets/inlineStyleControls.scss';
 
 var INLINE_STYLES = [
   {label: 'Bold', style: 'BOLD'},
   {label: 'Italic', style: 'ITALIC'},
   {label: 'Underline', style: 'UNDERLINE'},
-  {label: 'Monospace', style: 'CODE'},
+  {label: 'M', style: 'CODE'},
 ];
 
 const InlineStyleControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
   return (
-    <div className="RichEditor-controls">
+    <div className="RichEditor-controls inlineStyle">
       {INLINE_STYLES.map(type =>
         <StyleButton
           key={type.label}

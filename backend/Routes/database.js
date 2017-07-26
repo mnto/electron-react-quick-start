@@ -28,7 +28,7 @@ router.get('/user/:userId', function(req, res) {
 // Retrieves a specific document from the document and passes the information
 // as a JSON object to the Document Landing Page component.
 router.get('/docs/:docId', (req, res)=> {
-  Document.findOne({id: req.params.docId})
+  Document.findById(req.params.docId)
   .populate('owner')
   .exec((err, doc) => {
     if (err) {
@@ -61,7 +61,7 @@ router.post('/docs/save/:docId', (req, res)=> {
 // POST create new document
 // Creates a new document in database with title and password entered from New Document Modal
 // Returns a document object upon success
-router.post('docs/new', (req, res) => {
+router.post('/docs/new', (req, res) => {
   var password = hashPassword(req.body.password);
   var title = req.body.title;
   var owner = req.body.owner; //user id
