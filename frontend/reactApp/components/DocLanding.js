@@ -49,12 +49,6 @@ class DocLanding extends React.Component{
     return(
       <div className="container page">
         <div className="row">
-          <div>
-            <Link className="waves-effect waves-light btn col s5" to={`/user/$(this.state.document.owner._id)`}>
-              <i className="material-icons left">chevron_left</i>
-              Back to Document Portal
-            </Link>
-          </div>
           {doc && <div className="description col s12">
 
             <h2>{doc.title}</h2>
@@ -68,7 +62,11 @@ class DocLanding extends React.Component{
           </div>}
 
         </div>
-        <TextEditor id={id} doc={this.state.document}/>
+        <TextEditor
+          id={id}
+          doc={this.state.document}
+          history={this.props.history}
+        />
         <footer className="page-footer">
           <div className="container">
             <div className="row">
