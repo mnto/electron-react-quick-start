@@ -30,9 +30,7 @@ var auth = (passport) => {
   // Called within the same componentDidMount on Document Portal page and is
   // used to pass down the user id as a prop to NewDocModal for creating new documents
   router.get('/userID', (req, res) => {
-    const session = JSON.parse(req.session);
-    const id = session.passport.user;
-    res.send({ id });
+    res.json({id: req.session.passport.user});
   });
 
   // GET Logout

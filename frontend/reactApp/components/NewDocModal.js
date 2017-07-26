@@ -11,9 +11,8 @@ class NewDocModal extends React.Component {
     };
   }
 
+
   onSubmit(event) {
-    event.preventDefault();
-    console.log("hello");
     event.preventDefault();
     axios.post('http://localhost:3000/docs/new', {
       title: this.state.title,
@@ -21,7 +20,8 @@ class NewDocModal extends React.Component {
       owner: this.props.id
     })
     .then((resp) => {
-      console.log('success', resp);
+      console.log('success IN ON SUBMIT', resp.data);
+      this.props.history.push('/documents/' + resp.data.doc.id);
     })
     .catch((err) => {
       console.log('error loging in', err);
