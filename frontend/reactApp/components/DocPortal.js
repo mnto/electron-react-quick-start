@@ -60,26 +60,6 @@ class DocPortal extends React.Component{
   render(){
     return(
       <div>
-<<<<<<< HEAD
-        <h4>Your documents</h4>
-        <ul>
-          {this.state.ownDocs.map(
-            (doc) => {
-              return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
-            }
-          )}
-        </ul>
-        <ul>
-          <h4>Collaborating documents</h4>
-          {this.state.collabDocs.map(
-            (doc) => {
-              return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
-            }
-          )}
-        </ul>
-        <Button waves='light' href='/docs/new'>Click to create a new document<Icon left>create</Icon></Button>
-
-=======
         <div>
           <a href="/logout" className="waves-effect waves-light btn"><i className="material-icons right">directions_run</i>Logout</a>
         </div>
@@ -104,7 +84,6 @@ class DocPortal extends React.Component{
           </ul>
         </div>
         <NewDocModal id={this.state.userId} history={this.props.history}/>
->>>>>>> master
       </div>
     );
   }
