@@ -44,13 +44,15 @@ router.get('/docs/:docId', (req, res)=> {
 // Saves the document's text and returns a JSON object with the same document
 router.post('/docs/save/:docId', (req, res)=> {
   var text = req.body.text;
-  Document.findOne({id: req.params.docId}, (err, doc) =>{
+  console.log("THIS IS THE ID",req.params.docId);
+  Document.findById(req.params.docId, (err, doc) =>{
     if (err) {
-      console.log(err);
+      console.log("ERROR ALERT", err);
       res.json({success: false});
     } else {
       doc.text = text;
       doc.save();
+      console.log("THIS IS THE DOC", doc);
       res.json({success: true, doc: doc});
     }
   });
@@ -69,6 +71,8 @@ router.post('/docs/new', (req, res) => {
     owner: owner,
     dateCreated: new Date(),
     password: password,
+    text: '',
+    collabs: []
   });
   newDoc.save()
   .then((doc) => {
@@ -103,5 +107,6 @@ router.get('/docs/check/:docId', (req, res) => {
     }
   });
 });
+
 
 module.exports = router;
