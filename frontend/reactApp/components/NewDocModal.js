@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button } from 'react-materialize';
+import { Button, Modal, Icon  } from 'react-materialize';
 
 class NewDocModal extends React.Component {
   constructor(props) {
@@ -56,7 +56,7 @@ class NewDocModal extends React.Component {
                     <i className="material-icons prefix">lock</i>
                     <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
                   </div>
-                  <input className="btn waves-effect waves-light green accent-3" type="submit" value="Create new document" />
+                  <button className="btn waves-effect waves-light green accent-3" type="submit" value="Create new document" />
                 </div>
               </form>
             </div>
