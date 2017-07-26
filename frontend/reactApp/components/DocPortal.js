@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-materialize';
 import  NewDocModal from './NewDocModal';
+import { Link } from 'react-router-dom';
 
 
 class DocPortal extends React.Component{
@@ -26,6 +27,7 @@ class DocPortal extends React.Component{
           ownDocs,
           collabDocs
         });
+        console.log("DOC PORTAL STATE", this.state);
       })
       .catch(err => {
         console.log(err);
@@ -36,39 +38,18 @@ class DocPortal extends React.Component{
     });
   }
 
-  // componentDidMount(){
-  //   axios.get('http://localhost:3000/userID')
-  //   .then((resp) => {
-  //     console.log("componentDidMount RESP ID", resp.id);
-  //     this.setState({userId:resp.id});
-  //     axios.get('http://localhost:3000/user/' + this.state.userId)
-  //     .then((response) => response.json())
-  //     .then(jsonResp => {
-  //       const ownDocs = jsonResp.ownDocs;
-  //       const collabDocs = jsonResp.collaborating;
-  //       this.setState({
-  //         ownDocs,
-  //         collabDocs
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log("error finding documents", err);
-  //     });
-  //   });
-  // }
-
   render(){
     return(
       <div>
         <div>
-          <a href="/logout" className="waves-effect waves-light btn"><i className="material-icons right">directions_run</i>Logout</a>
+          <Link to="/logout" className="waves-effect waves-light btn"><i className="material-icons right">directions_run</i>Logout</Link>
         </div>
         <div>
           <h4>Your documents</h4>
           <ul>
             {this.state.ownDocs.map(
               (doc) => {
-                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+                return <li key={doc._id}><Link to={`/docs/${doc._id}`}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
               }
             )}
           </ul>
@@ -78,7 +59,7 @@ class DocPortal extends React.Component{
           <ul>
             {this.state.collabDocs.map(
               (doc) => {
-                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+                return <li key={doc._id}><Link to={`/docs/${doc._id}`}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
               }
             )}
           </ul>

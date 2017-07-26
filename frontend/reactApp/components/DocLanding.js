@@ -1,6 +1,7 @@
 import React from 'react';
 import TextEditor from './TextEditor';
 import styles from '../../assets/stylesheets/docLanding.scss';
+import { Link } from 'react-router-dom';
 import { Button } from 'react-materialize';
 import axios from 'axios';
 
@@ -14,28 +15,29 @@ class DocLanding extends React.Component{
 
   componentDidMount(){
     const docId = this.props.match.params;
+    console.log("DOCUMENT ID", docId);
     axios.get('http://localhost:3000/docs/'+ docId)
     .then((docResponse) => {
-      console.log("FOUND DOCUMENT");
-      this.setState({document: docResponse.doc});
+      console.log("FOUND DOCUMENT", docResponse.data);
+      this.setState({document: docResponse.data.doc});
     })
     .catch((err) => {
-      console.log("ERROR FINDING DOCUMENT");
+      console.log("ERROR FINDING DOCUMENT", err);
     });
   }
 
   render(){
-    const date = (new Date(this.state.document.dateCreated)).toLocaleString();
+    // const date = (new Date(this.state.document.dateCreated)).toLocaleString();
     return(
       <div className="container page">
         <div className="row">
           <div>
-            <a className="waves-effect waves-light btn col s5"><i className="material-icons left">chevron_left</i>Back to Document Portal</a>
+            <Link className="waves-effect waves-light btn col s5" to={`/user/$(this.state.document.owner._id)`}><i className="material-icons left">chevron_left</i>Back to Document Portal</Link>
           </div>
           <div className="description col s12">
-            <h2>{this.state.document.title}</h2>
-            <h6>Shareable ID: {this.state.document.id}</h6>
-            <p>Created by {this.state.document.owner.username} on {date}</p>
+            <h2>Title</h2>
+            <h6>Shareable ID: </h6>
+            <p>Created by on </p>
             <p>Collaborators: </p>
           </div>
           <div className="btn waves-effect waves-light col s4 offset-s4" type="submit" name="action">

@@ -15,8 +15,8 @@ class Register extends React.Component{
     e.preventDefault();
     axios.post('http://localhost:3000/register', {
       username: this.state.username,
-        password: this.state.password
-      })
+      password: this.state.password
+    })
       .then(() => {
         console.log("Successful registration! Going to login page.");
       })

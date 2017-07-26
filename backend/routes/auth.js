@@ -16,7 +16,7 @@ var auth = (passport) => {
 
   // POST Login page
   router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.redirect('/');
+    res.json({id: req.session.passport.user});
   });
 
   // GET Logged-In verification
@@ -37,7 +37,7 @@ var auth = (passport) => {
   // Ends the session and redirects to login
   router.get('/logout', (req, res) => {
     req.logout();
-    res.redirect('/login');
+    res.redirect('/');
   });
 
   // // GET registration page
