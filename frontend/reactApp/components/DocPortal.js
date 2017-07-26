@@ -11,7 +11,9 @@ class DocPortal extends React.Component{
     this.state = {
       userId: '',
       ownDocs: [],
-      collabDocs: []
+      collabDocs: [],
+      shareDocId: '',
+      shareDocPwd: ''
     };
   }
 
@@ -22,9 +24,40 @@ class DocPortal extends React.Component{
       console.log('logging out');
       this.props.history.push('/');
     })
-    .catch((err) =>
-      console.log('error logging out', err)
-    );
+    .catch((err) =>{
+      console.log('error logging out', err);
+    });
+  }
+  handleIdChange(e){
+    this.setState({
+      shareDocId: e.target.value
+    });
+  }
+
+  handlePwdChange(e){
+    this.setState({
+      shareDocPwd: e.target.value
+    });
+  }
+
+  handleIdSubmit(e){
+    e.preventDefault();
+    axios.post('http://localhost:3000/docs/add-collab', {
+      userId: this.state.userId,
+      docPwd: this.state.shareDocPwd,
+      docId: this.state.shareDocId
+    })
+    .then((response) => {
+      const ownDocs = response.data.ownDocs;
+      const collabDocs = response.data.collaborating;
+      this.setState({
+        ownDocs,
+        collabDocs
+      });
+    })
+    .catch((err) => {
+      console.log("ERROR IN UPDATING STATE IN ID SUBMIT", err);
+    });
   }
 
   componentDidMount(){
@@ -78,6 +111,23 @@ class DocPortal extends React.Component{
               }
             )}
           </ul>
+        </div>
+        <div className="container">
+          <form onSubmit={(e) => this.handleIdSubmit(e) }>
+            <div className="row">
+              <div className="input-field">
+                <input id="docId" type="text" className="validate" onChange={ (e) => { this.handleIdChange(e); }} value={this.state.shareDocId}/>
+                <label htmlFor="docId">Shareable Document Id</label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field">
+                <input id="idPwd" type="text" className="validate" onChange={ (e) => { this.handlePwdChange(e); }} value={this.state.shareDocPwd}/>
+                <label htmlFor="idPwd">Document Password</label>
+              </div>
+            </div>
+            <button type="submit" className="btn waves-effect waves-light">Collaborate!</button>
+          </form>
         </div>
         <NewDocModal id={this.state.userId} history={this.props.history}/>
       </div>

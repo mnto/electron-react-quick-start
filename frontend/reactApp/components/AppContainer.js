@@ -6,6 +6,28 @@ import DocPortal from './DocPortal';
 import DocLanding from './DocLanding';
 
 class AppContainer extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      loggedIn: false,
+      id: ''
+    }
+  }
+  componentDidMount(){
+    axios.get('http://localhost:3000/userID')
+    .then((resp) => {
+      if (resp.data.id){
+        this.setState({
+          loggedIn: true,
+          id: resp.data.id
+        });
+      }
+    })
+    .catch((err) => {
+      console.log("ERROR WITH GETTING USERID FOR APP COMPONENT");
+    });
+
+  }
   render() {
     console.log('app container');
     return (
