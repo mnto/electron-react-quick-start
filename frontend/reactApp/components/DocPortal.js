@@ -24,11 +24,10 @@ class DocPortal extends React.Component{
       console.log('logging out');
       this.props.history.push('/');
     })
-    .catch((err) =>
-      console.log('error logging out', err)
-    );
+    .catch((err) =>{
+      console.log('error logging out', err);
+    });
   }
-
   handleIdChange(e){
     this.setState({
       shareDocId: e.target.value
@@ -73,6 +72,7 @@ class DocPortal extends React.Component{
           ownDocs,
           collabDocs
         });
+        console.log("DOC PORTAL STATE", this.state);
       })
       .catch(err => {
         console.log(err);

@@ -9,7 +9,6 @@ const MongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-
 // import API routes
 const auth = require('./Routes/auth');
 const database = require('./Routes/database');
@@ -18,6 +17,10 @@ const { User } = require('./models/models');
 const hashPassword = require('./helper/passwordHash');
 
 const app = express();
+
+// Handle Socket.Io setup
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -74,6 +77,14 @@ passport.use(new LocalStrategy((username, password, done) => {
 // Use the API and authentication routes
 app.use('/', auth(passport));
 app.use('/', database);
+
+// Call socket.io here
+io.on('connection', (socket) => {
+  console.log("SOCKET CONNECTION SUCCESSFUL");
+  socket.on('started', (message) => {
+    console.log("FIRST SOCKET CONNECTION", message);
+  });
+});
 
 app.listen(3000, () => {
   console.log('Backend server for Electron App running on port 3000!');
