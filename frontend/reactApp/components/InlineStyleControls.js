@@ -1,4 +1,4 @@
-import React from 'React';
+import React from 'react';
 import StyleButton from './StyleButton';
 import styles from '../../assets/stylesheets/inlineStyleControls.scss';
 
