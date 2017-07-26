@@ -20,11 +20,11 @@ class NewDocModal extends React.Component {
       owner: this.props.id
     })
     .then((resp) => {
-      console.log('success IN ON SUBMIT', resp.data);
-      this.props.history.push('/documents/' + resp.data.doc.id);
+      console.log('success IN ON CREATE DOC SUBMIT', resp.data.doc);
+      this.props.history.push('/docs/' + resp.data.doc._id);
     })
     .catch((err) => {
-      console.log('error loging in', err);
+      console.log('MODAL ERROR', err);
     });
   }
 
@@ -46,7 +46,7 @@ class NewDocModal extends React.Component {
       <div>
         <Modal
           header='Create a new Document'
-          trigger={<Button waves='light'>Create a new document<Icon right>add</Icon></Button>}>
+          trigger={<a className="btn-floating btn-large waves-effect waves-light purple"><i className="material-icons">add</i></a>}>
             <div className="row">
               <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
                 <div className="row">
@@ -58,7 +58,7 @@ class NewDocModal extends React.Component {
                     <i className="material-icons prefix">lock</i>
                     <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
                   </div>
-                  <input className="btn waves-effect waves-light green accent-3" type="submit" value="Create" />
+                  <button className="btn waves-effect waves-light green accent-3" type="submit">Create</button>
                 </div>
               </form>
             </div>

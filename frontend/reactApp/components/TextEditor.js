@@ -30,6 +30,11 @@ class TextEditor extends React.Component {
     this.focus = () => this.refs.editor.focus();
   }
 
+  componentDidMount() {
+    console.log('TextEditor mounted');
+    // this.props.socket.emit('started', 'hello world!');
+  }
+
   //recieves all keyDown events.
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
@@ -198,10 +203,6 @@ class TextEditor extends React.Component {
   render() {
     return (
       <div className="editorRoot">
-        <BlockStyleControls
-          editorState={this.state.editorState}
-          onToggle={this.toggleBlockType.bind(this)}
-        />
         <InlineStyleControls
           editorState={this.state.editorState}
           onToggle={this.toggleInlineStyle.bind(this)}
@@ -209,6 +210,10 @@ class TextEditor extends React.Component {
         <AlignmentControls
           editorState={this.state.editorState}
           onToggle={this.toggleAlign.bind(this)}
+        />
+        <BlockStyleControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleBlockType.bind(this)}
         />
         <ColorControls
           editorState={this.state.editorState}
