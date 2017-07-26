@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
 import BlockStyleControls from './BlockStyleControls';
@@ -14,18 +15,24 @@ import SizeControls from './SizeControls';
 import FontControls from './FontControls';
 import styles from '../../assets/stylesheets/textEditor.scss';
 import axios from 'axios';
+import io from 'socket.io-client';
 
 class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      socket: io('http://localhost:3000/'),
       saveFlag: false,
       editorState: EditorState.createEmpty()
     };
 
     //when something in the editor changes
-    this.onChange = (editorState) =>
+    this.onChange = (editorState) => {
       this.setState({editorState: editorState, saveFlag: false});
+      const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+      const strCS = JSON.stringify(rawCS);
+      this.state.socket.emit("sendContentState", strCS);
+    };
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
@@ -38,24 +45,46 @@ class TextEditor extends React.Component {
     //GET MOST RECENT FROM DOC DB
     console.log("PROPS", this.props);
     var self = this;
+    //Axios call to get the document
     axios.get('http://localhost:3000/docs/' + this.props.id)
     .then(({ data }) => {
-      console.log("DATADOC", data.doc.text);
-      const rawCS =  JSON.parse(data.doc.text);
-      const contentState = convertFromRaw(rawCS);
-      const newState = EditorState.createWithContent(contentState);
-      self.setState({editorState: newState});
+      if (data.success) {
+        const rawCS =  JSON.parse(data.doc.text);
+        const contentState = convertFromRaw(rawCS);
+        const newState = EditorState.createWithContent(contentState);
+        self.setState({editorState: newState});
+        this.state.socket.on('connect', () => {
+          console.log('CONNECTED TO SOCKETS');
+          this.state.socket.emit("documentId", this.props.id);
+        });
+        this.state.socket.on('errorMessage', message => {
+          console.log("ERROR", message);
+        });
+        this.state.socket.on('sendBackContentState', socketStr => {
+          const socketRaw =  JSON.parse(socketStr);
+          const socketCS = convertFromRaw(socketRaw);
+          const socketState = EditorState.createWithContent(socketCS);
+          self.setState({editorState: socketState});
+        });
+      }
+      else {
+        console.log("ERROR LOADING");
+      }
     })
     .catch(err => {
       console.log(err);
     });
   }
 
+  componentWillUnmount() {
+    this.state.socket.disconnect();
+  }
+
   onSave(e) {
     e.preventDefault();
     const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
     const strCS = JSON.stringify(rawCS);
-    axios.post('http://localhost:3000/docs/save/' + this.props.id.docId, {
+    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
       text: strCS
     })
     .then(resp => {
@@ -67,6 +96,15 @@ class TextEditor extends React.Component {
     });
   }
 
+  onBack(e) {
+    e.preventDefault();
+    if (this.state.saveFlag) {
+      this.props.history.push('/user/' + this.props.id);
+    }
+    else {
+      alert("You haven't saved your changes yet");
+    }
+  }
 
   //recieves all keyDown events.
   //helps us define custom key bindings
@@ -263,6 +301,12 @@ class TextEditor extends React.Component {
           Save Changes
           <i className="material-icons left">save</i>
         </button>
+        <div>
+          <button className="waves-effect waves-light btn col s5" onClick={(e) => this.onBack(e)}>
+            <i className="material-icons left">chevron_left</i>
+            Back to Document Portal
+          </button>
+        </div>
         <div className="editorRoot">
           <InlineStyleControls
             editorState={this.state.editorState}
