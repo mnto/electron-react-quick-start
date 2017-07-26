@@ -6,7 +6,10 @@
   font-size: 14px;
   padding: 15px;
 }
-
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+}
 .editor {
   border-top: 1px solid $gray;
   cursor: text;

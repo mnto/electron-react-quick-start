@@ -1,7 +1,7 @@
 import React from 'react';
 import TextEditor from './TextEditor';
+import { Link } from 'react-router-dom';
 import styles from '../../assets/stylesheets/docLanding.scss';
-import { Button } from 'react-materialize';
 
 class DocLanding extends React.Component{
   constructor(props){
@@ -13,7 +13,10 @@ class DocLanding extends React.Component{
       <div className="container page">
         <div className="row">
           <div>
-            <a className="waves-effect waves-light btn col s5"><i className="material-icons left">chevron_left</i>Back to Document Portal</a>
+            <Link to="/documents" className="waves-effect waves-light btn col s5">
+              <i className="material-icons left">chevron_left</i>
+              Back to Document Portal
+            </Link>
           </div>
           <div className="description col s12">
             <h2>Document title!</h2>

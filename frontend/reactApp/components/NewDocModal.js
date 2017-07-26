@@ -46,7 +46,7 @@ class NewDocModal extends React.Component {
       <div>
         <Modal
           header='Create a new Document'
-          trigger={<Button waves='light'>Create a new document<Icon right>add</Icon></Button>}>
+          trigger={<a className="btn-floating btn-large waves-effect waves-light purple"><i className="material-icons">add</i></a>}>
             <div className="row">
               <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
                 <div className="row">

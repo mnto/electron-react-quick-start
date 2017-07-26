@@ -1,0 +1,22 @@
+@import "colors";
+
+.register {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.buttons {
+  display: flex;
+  align-items: center;
+}
+.reg-btn {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.back-btn {
+  color: $white;
+}
