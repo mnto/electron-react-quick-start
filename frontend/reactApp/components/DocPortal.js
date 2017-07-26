@@ -8,7 +8,7 @@ class DocPortal extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      userId: null,
+      userId: '',
       ownDocs: [],
       collabDocs: []
     };

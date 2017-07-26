@@ -11,7 +11,6 @@ const LocalStrategy = require('passport-local').Strategy;
 
 
 // import API routes
-// const routes = require('./Routes/routes');
 const auth = require('./Routes/auth');
 const database = require('./Routes/database');
 
@@ -48,22 +47,22 @@ passport.deserializeUser((id, done) => {
 });
 
 
-passport.use(new LocalStrategy( (username, password, done) => {
+passport.use(new LocalStrategy((username, password, done) => {
   const hash = hashPassword(password);
 
   // Find the user with the given username
   User.findOne({username: username})
     .then((user) => {
-      // if no user present, auth failed
+      // If no user is present, authentication failed
       if (!user) {
         console.log(user);
         return done(null, false, {message: 'Incorrect username.'});
       }
-      // if passwords do not match, auth failed
+      // If passwords do not match, authentication failed
       if (user.password !== hash) {
         return done(null, false, {message: 'Incorrect password.'});
       }
-      // auth has has succeeded
+      // Authentication succeeded
       return done(null, user);
     })
     .catch((err) => {
@@ -72,11 +71,10 @@ passport.use(new LocalStrategy( (username, password, done) => {
     });
 }));
 
-
+// Use the API and authentication routes
 app.use('/', auth(passport));
-// app.use('/', routes);
 app.use('/', database);
 
-app.listen(3000, function () {
+app.listen(3000, () => {
   console.log('Backend server for Electron App running on port 3000!');
 });

@@ -1,5 +1,6 @@
 var crypto = require('crypto');
 
+// Implements the popular 'sha256' hashing method
 const hashPassword = (password) => {
   const hash = crypto.createHash('sha256');
   hash.update(password);
@@ -7,4 +8,3 @@ const hashPassword = (password) => {
 };
 
 module.exports = hashPassword;
-
