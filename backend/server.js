@@ -79,12 +79,7 @@ app.use('/', auth(passport));
 app.use('/', database);
 
 // Call socket.io here
-io.on('connection', (socket) => {
-  console.log("SOCKET CONNECTION SUCCESSFUL");
-  socket.on('started', (message) => {
-    console.log("FIRST SOCKET CONNECTION", message);
-  });
-});
+require('./socket');
 
 app.listen(3000, () => {
   console.log('Backend server for Electron App running on port 3000!');
