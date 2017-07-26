@@ -2,8 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { Button } from 'react-materialize';
 import  NewDocModal from './NewDocModal';
+import { Link } from 'react-router-dom';
 import styles from '../../assets/stylesheets/docPortal.scss';
-
 
 class DocPortal extends React.Component{
   constructor(props){
@@ -30,20 +30,23 @@ class DocPortal extends React.Component{
   componentDidMount(){
     axios.get('http://localhost:3000/userID')
     .then((resp) => {
-      this.setState({userId: resp.id});
+      this.setState({userId: resp.data.id});
       axios.get('http://localhost:3000/user/' + this.state.userId)
-      .then((response) => response.json())
-      .then(jsonResp => {
-        const ownDocs = jsonResp.ownDocs;
-        const collabDocs = jsonResp.collaborating;
+      .then((response) => {
+        const ownDocs = response.data.ownDocs;
+        const collabDocs = response.data.collaborating;
         this.setState({
           ownDocs,
           collabDocs
         });
+        console.log("DOC PORTAL STATE", this.state);
       })
-      .catch((err) => {
-        console.log("error finding documents", err);
+      .catch(err => {
+        console.log(err);
       });
+    })
+    .catch((err)=>{
+      console.log("ERROR in loading", err);
     });
   }
 
@@ -61,7 +64,7 @@ class DocPortal extends React.Component{
           <ul>
             {this.state.ownDocs.map(
               (doc) => {
-                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+                return <li key={doc._id}><Link to={`/docs/${doc._id}`}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
               }
             )}
           </ul>
@@ -71,12 +74,12 @@ class DocPortal extends React.Component{
           <ul>
             {this.state.collabDocs.map(
               (doc) => {
-                return <li><Button floating large node='a' href={'/documents/' + doc.id} waves='light' icon='insert_drive_file' />{doc.name}</li>;
+                return <li key={doc._id}><Link to={`/docs/${doc._id}`}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
               }
             )}
           </ul>
         </div>
-        <NewDocModal id={this.state.userId}/>
+        <NewDocModal id={this.state.userId} history={this.props.history}/>
       </div>
     );
   }

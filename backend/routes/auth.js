@@ -16,7 +16,7 @@ var auth = (passport) => {
 
   // POST Login page
   router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.redirect('/');
+    res.json({id: req.session.passport.user});
   });
 
   // GET Logged-In verification
@@ -30,16 +30,14 @@ var auth = (passport) => {
   // Called within the same componentDidMount on Document Portal page and is
   // used to pass down the user id as a prop to NewDocModal for creating new documents
   router.get('/userID', (req, res) => {
-    const session = JSON.parse(req.session);
-    const id = session.passport.user;
-    res.send({ id });
+    res.json({id: req.session.passport.user});
   });
 
   // GET Logout
   // Ends the session and redirects to login
   router.get('/logout', (req, res) => {
     req.logout();
-    res.redirect('/login');
+    res.redirect('/');
   });
 
   // // GET registration page

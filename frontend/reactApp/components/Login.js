@@ -14,14 +14,12 @@ class Login extends React.Component {
 
   onSubmit(event) {
     event.preventDefault();
-    console.log('loggin in');
     axios.post('http://localhost:3000/login', {
       username: this.state.username,
       password: this.state.password
     })
     .then((resp) => {
-      console.log('success', resp);
-      this.props.history.push('/documents');
+      this.props.history.push('/user/'+resp.data.id);
     })
     .catch((err) => {
       console.log('error logging in', err);
