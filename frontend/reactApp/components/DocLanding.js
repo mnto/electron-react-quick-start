@@ -9,6 +9,7 @@ class DocLanding extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      socket: io(),
       document: null
     };
   }
@@ -48,7 +49,7 @@ class DocLanding extends React.Component{
             <i className="material-icons left">save</i>
           </div>
         </div>
-        <TextEditor />
+        <TextEditor socket={this.state.socket}/>
         <footer className="page-footer">
           <div className="container">
             <div className="row">
