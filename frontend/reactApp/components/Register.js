@@ -20,6 +20,7 @@ class Register extends React.Component{
     })
       .then(() => {
         console.log("Successful registration! Going to login page.");
+        this.props.history.push('/');
       })
       .catch((err) => {
         console.log("Error with registration", err);
