@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { Materialize } from 'react-materialize';
 import { Link } from 'react-router-dom';
 
 class Register extends React.Component{
@@ -15,11 +14,11 @@ class Register extends React.Component{
   onSubmit(e) {
     e.preventDefault();
     axios.post('http://localhost:3000/register', {
-        username: this.state.username,
+      username: this.state.username,
         password: this.state.password
       })
       .then(() => {
-        console.log("Going to registration page!");
+        console.log("Successful registration! Going to login page.");
       })
       .catch((err) => {
         console.log("Error with registration", err);

@@ -10,4 +10,5 @@ import AppContainer from './components/AppContainer';
 // .catch(err => {throw err})
 
 ReactDOM.render(<AppContainer />,
-   document.getElementById('root'));
+   document.getElementById('root')
+ );
