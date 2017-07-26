@@ -16,6 +16,7 @@ class DocLanding extends React.Component{
 
   componentDidMount(){
     const docId = this.props.match.params;
+    this.state.socket.emit('started', 'something is working!');
     console.log("DOCUMENT ID", docId);
     axios.get('http://localhost:3000/docs/'+ docId)
     .then((docResponse) => {

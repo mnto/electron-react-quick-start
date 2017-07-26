@@ -81,8 +81,8 @@ app.use('/', database);
 // Call socket.io here
 io.on('connection', (socket) => {
   console.log("SOCKET CONNECTION SUCCESSFUL");
-  socket.on('started', () => {
-    console.log("FIRST SOCKET CONNECTION");
+  socket.on('started', (message) => {
+    console.log("FIRST SOCKET CONNECTION", message);
   });
 });
 
