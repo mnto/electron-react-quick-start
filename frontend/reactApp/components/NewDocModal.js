@@ -17,7 +17,7 @@ class NewDocModal extends React.Component {
     axios.post('http://localhost:3000/docs/new', {
       title: this.state.title,
       password: this.state.password,
-      owner: this.props.id
+      owner: this.props.id,
     })
     .then((resp) => {
       console.log('success IN ON CREATE DOC SUBMIT', resp.data.doc);
