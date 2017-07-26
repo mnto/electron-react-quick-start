@@ -1,7 +1,7 @@
 import React from 'react';
 import TextEditor from './TextEditor';
-import styles from '../../assets/stylesheets/docLanding.scss';
 import { Link } from 'react-router-dom';
+import styles from '../../assets/stylesheets/docLanding.scss';
 import { Button } from 'react-materialize';
 import axios from 'axios';
 
@@ -32,7 +32,10 @@ class DocLanding extends React.Component{
       <div className="container page">
         <div className="row">
           <div>
-            <Link className="waves-effect waves-light btn col s5" to={`/user/$(this.state.document.owner._id)`}><i className="material-icons left">chevron_left</i>Back to Document Portal</Link>
+            <Link className="waves-effect waves-light btn col s5" to={`/user/$(this.state.document.owner._id)`}>
+              <i className="material-icons left">chevron_left</i>
+              Back to Document Portal
+            </Link>
           </div>
           <div className="description col s12">
             <h2>Title</h2>

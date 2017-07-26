@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import styles from '../../assets/stylesheets/login.scss';
 
 class Login extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container login">
         <div className="row">
           <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
             <div className="row">
@@ -63,10 +64,10 @@ class Login extends React.Component {
                 <i className="material-icons prefix">lock</i>
                 <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
               </div>
-              <button type="submit" className="btn waves-effect waves-light green accent-3">Login</button>
+              <button type="submit" className="btn waves-effect waves-light green accent-3 col s2 offset-s5 login-btn">Login</button>
+              <Link to="/register" className="btn waves-effect waves-light accent-3 col s2 offset-s5">Register</Link>
             </div>
           </form>
-          <Link to="/register" className="btn waves-effect waves-light accent-3">Register</Link>
         </div>
       </div>
     );

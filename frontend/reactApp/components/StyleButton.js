@@ -24,6 +24,7 @@ class StyleButton extends React.Component {
         this.props.label === 'Bold' ? <i className="material-icons">format_bold</i> :
         this.props.label === 'Italic' ? <i className="material-icons">format_italic</i> :
         this.props.label === 'Underline' ? <i className="material-icons">format_underlined</i> :
+        this.props.label === 'M' ? <i className="material-icons">code</i> :
         this.props.label === 'Left Align' ? <i className="material-icons">format_align_left</i> :
         this.props.label === 'Center Align' ? <i className="material-icons">format_align_center</i> :
         this.props.label === 'Right Align' ? <i className="material-icons">format_align_right</i> :

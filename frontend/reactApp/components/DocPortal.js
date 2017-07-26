@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button } from 'react-materialize';
 import  NewDocModal from './NewDocModal';
 import { Link } from 'react-router-dom';
-
+import styles from '../../assets/stylesheets/docPortal.scss';
 
 class DocPortal extends React.Component{
   constructor(props){
@@ -15,7 +15,19 @@ class DocPortal extends React.Component{
     };
   }
 
-  componentDidMount() {
+  logout(e) {
+    e.preventDefault();
+    axios.get('http://localhost:3000/logout')
+    .then((resp) => {
+      console.log('logging out');
+      this.props.history.push('/');
+    })
+    .catch((err) =>
+      console.log('error logging out', err)
+    );
+  }
+
+  componentDidMount(){
     axios.get('http://localhost:3000/userID')
     .then((resp) => {
       this.setState({userId: resp.data.id});
@@ -40,9 +52,12 @@ class DocPortal extends React.Component{
 
   render(){
     return(
-      <div>
-        <div>
-          <Link to="/logout" className="waves-effect waves-light btn"><i className="material-icons right">directions_run</i>Logout</Link>
+      <div className="container docPortal">
+        <div className="row">
+          <button onClick={(e) => this.logout(e)}
+            className="waves-effect waves-light btn col s2 offset-s10">
+            <i className="material-icons right">directions_run</i>Logout
+          </button>
         </div>
         <div>
           <h4>Your documents</h4>

@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import styles from '../../assets/stylesheets/register.scss';
 
 class Register extends React.Component{
   constructor(props){
@@ -40,6 +41,7 @@ class Register extends React.Component{
 
   render(){
     return(
+      <div className="container register">
         <div className="row">
           <form className="col s12" onSubmit={(e) => this.onSubmit(e)} method="POST" action="/register">
             <div className="row">
@@ -55,14 +57,18 @@ class Register extends React.Component{
               </div>
             </div>
             <div>
-              <button className="btn waves-effect waves-light green accent-3" type="submit" name="action">
+              <button className="btn waves-effect waves-light green accent-3 col s4 offset-s4 reg-btn" type="submit" name="action">
                 <i className="material-icons right">send</i>
                 Register!
               </button>
+              <Link className="waves-effect btn-flat col s4 offset-s4 back-btn" to="/">
+                <i className="material-icons left">chevron_left</i>
+                Login
+              </Link>
             </div>
           </form>
-           <Link className="waves-effect btn-flat" to="/">Back to login</Link>
         </div>
+      </div>
     );
   }
 }
