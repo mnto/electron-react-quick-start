@@ -8,7 +8,7 @@ class DocPortal extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      userId: null,
+      userId: '',
       ownDocs: [],
       collabDocs: []
     };
@@ -17,7 +17,7 @@ class DocPortal extends React.Component{
   componentDidMount(){
     axios.get('http://localhost:3000/userID')
     .then((resp) => {
-      this.setState({userId:resp.id});
+      this.setState({userId: resp.id});
       axios.get('http://localhost:3000/user/' + this.state.userId)
       .then((response) => response.json())
       .then(jsonResp => {
@@ -38,7 +38,7 @@ class DocPortal extends React.Component{
     return(
       <div>
         <div>
-          <a href="/logout" className="waves-effect waves-light btn"><i class="material-icons right">directions_run</i>Logout</a>
+          <a href="/logout" className="waves-effect waves-light btn"><i className="material-icons right">directions_run</i>Logout</a>
         </div>
         <div>
           <h4>Your documents</h4>
