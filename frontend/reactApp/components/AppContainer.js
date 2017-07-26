@@ -25,7 +25,8 @@ class AppContainer extends React.Component {
     })
     .catch((err) => {
       console.log("ERROR WITH GETTING USERID FOR APP COMPONENT");
-    })
+    });
+
   }
   render() {
     console.log('app container');

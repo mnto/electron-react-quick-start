@@ -11,17 +11,17 @@ router.get('/user/:userId', function(req, res) {
     Document.find({ collabs: { "$in" : [req.params.userId]} })
   ];
   Promise.all(promises)
-    .then(docs => {
-      res.json({
-        success: true,
-        ownDocs: docs[0], //all docs the user owns
-        collaborating: docs[1] //all docs the user collaborates on
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({success: false});
+  .then(docs => {
+    res.json({
+      success: true,
+      ownDocs: docs[0], //all docs the user owns
+      collaborating: docs[1] //all docs the user collaborates on
     });
+  })
+  .catch((err) => {
+    console.log(err);
+    res.json({success: false});
+  });
 });
 
 // GET specific document
@@ -103,5 +103,28 @@ router.get('/docs/check/:docId', (req, res) => {
     }
   });
 });
+
+router.post('/docs/add-collab', (req, res) => {
+  Document.findById(req.body.docId, (err, doc) => {
+    if (err){
+      console.log(err);
+      res.json({success: false, message: err});
+    } else if (!doc){
+      console.log("NO DOC");
+      res.json({success: false, message: "No such document was found"});
+    } else {
+      const docPassword = hashPassword(req.body.docPwd);
+      if(doc.password !== docPassword){
+        console.log("PASSWORD FAILURE");
+        res.json({success: false, message: "Incorrect password"});
+      } else {
+        doc.collabs.push(req.body.userId);
+        doc.save();
+        res.redirect('/user/' + req.body.userId);
+      }
+    }
+  });
+});
+
 
 module.exports = router;
