@@ -79,8 +79,8 @@ app.use('/', auth(passport));
 app.use('/', database);
 
 // Call socket.io here
-require('./socket');
+require('./socket')(io);
 
-app.listen(3000, () => {
+http.listen(3000, () => {
   console.log('Backend server for Electron App running on port 3000!');
 });
