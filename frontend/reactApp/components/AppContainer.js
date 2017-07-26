@@ -4,6 +4,7 @@ import Login from './Login';
 import Register from './Register';
 import DocPortal from './DocPortal';
 import DocLanding from './DocLanding';
+import axios from 'axios';
 
 class AppContainer extends React.Component {
   constructor(props){
