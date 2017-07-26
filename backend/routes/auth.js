@@ -1,10 +1,11 @@
-// Add Passport-related auth routes here.
-
+// All Passport-related auth routes here
 const express = require('express');
 const router = express.Router();
 const  { User } = require('../models/models');
 const hashPassword = require('../helper/passwordHash');
 
+// export auth as a function that takes passport as an argument and,
+// when called in server.js, runs passport authentication on the user
 var auth = (passport) => {
 
   // GET Login page
@@ -18,25 +19,35 @@ var auth = (passport) => {
     res.redirect('/');
   });
 
+  // GET Logged-In verification
+  // This is called upon componentDidMount on Document Portal page after successful user login
+  // and helps us verify that a user is still logged in.
   router.get('/user/logged-in', (req, res) => {
     res.json({user: req.user});
   });
 
-  // GET Logout page
+  // GET user ID
+  // Called within the same componentDidMount on Document Portal page and is
+  // used to pass down the user id as a prop to NewDocModal for creating new documents
+  router.get('/userID', (req, res) => {
+    res.json({id: req.session.passport.user});
+  });
+
+  // GET Logout
+  // Ends the session and redirects to login
   router.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/login');
   });
 
-  // These will only work for mongo strategies.
+  // // GET registration page
+  // router.get('/register', (req, res) => {
+  //   res.render('signup');
+  // });
 
-  // GET registration page
-  router.get('/register', (req, res) => {
-    // res.render('signup');
-  });
-
+// POST registration
+// Creates and saves new user in database, redirects to /login upon success
   router.post('/register', (req, res) => {
-    console.log('HELLO HERE IN REG')
     const password = hashPassword(req.body.password);
 
     const newUser = new User({
@@ -46,7 +57,6 @@ var auth = (passport) => {
 
     newUser.save()
     .then((user)=>{
-      console.log(user);
       res.send({success: true});
       res.redirect('/login');
     })
@@ -58,4 +68,5 @@ var auth = (passport) => {
 
   return router;
 };
+
 module.exports = auth;

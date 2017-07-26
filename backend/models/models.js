@@ -14,12 +14,14 @@ const userSchema = mongoose.Schema({
 const documentSchema = mongoose.Schema({
   title: String,
   collabs: [
+  //array of users who have accessed the doc
     {
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     }
-  ], //array of users who've accessed the doc
-  text: String, //actual text of document
+  ],
+  //actual text contents of document
+  text: String,
   dateCreated: Date,
   owner: {
     type: mongoose.Schema.ObjectId,

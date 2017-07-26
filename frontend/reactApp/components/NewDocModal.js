@@ -11,15 +11,24 @@ class NewDocModal extends React.Component {
     };
   }
 
+
   onSubmit(event) {
     event.preventDefault();
+<<<<<<< HEAD
     axios.post('/docs/new', {
       title: this.state.title,
       password: this.state.password,
       owner: this.props.owner
+=======
+    axios.post('http://localhost:3000/docs/new', {
+      title: this.state.title,
+      password: this.state.password,
+      owner: this.props.id
+>>>>>>> master
     })
     .then((resp) => {
-      console.log('success', resp);
+      console.log('success IN ON SUBMIT', resp.data);
+      this.props.history.push('/documents/' + resp.data.doc.id);
     })
     .catch((err) => {
       console.log('error loging in', err);
@@ -28,7 +37,7 @@ class NewDocModal extends React.Component {
 
   onTitleChange(event) {
     this.setState({
-      username: event.target.value
+      title: event.target.value
     });
   }
 
@@ -43,8 +52,8 @@ class NewDocModal extends React.Component {
     return (
       <div>
         <Modal
-          header='Modal Header'
-          trigger={<Button waves='light'>Click to create document<Icon right>add</Icon></Button>}>
+          header='Create a new Document'
+          trigger={<Button waves='light'>Create a new document<Icon right>add</Icon></Button>}>
             <div className="row">
               <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
                 <div className="row">
@@ -56,7 +65,7 @@ class NewDocModal extends React.Component {
                     <i className="material-icons prefix">lock</i>
                     <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
                   </div>
-                  <input className="btn waves-effect waves-light green accent-3" type="submit" value="Create new document" />
+                  <input className="btn waves-effect waves-light green accent-3" type="submit" value="Create" />
                 </div>
               </form>
             </div>
