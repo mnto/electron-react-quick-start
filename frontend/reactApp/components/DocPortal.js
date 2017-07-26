@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button } from 'react-materialize';
+import { Button, Icon } from 'react-materialize';
 import  NewDocModal from './NewDocModal';
 
 
