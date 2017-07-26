@@ -31,7 +31,7 @@ class DocPortal extends React.Component{
       .catch((err) => {
         console.log("error finding documents", err);
       });
-    })
+    });
   }
 
   render(){
