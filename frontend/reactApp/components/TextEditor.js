@@ -98,6 +98,7 @@ class TextEditor extends React.Component {
 
   onBack(e) {
     e.preventDefault();
+    console.log('flag', this.state.saveFlag);
     if (this.state.saveFlag) {
       this.props.history.push('/user/' + this.props.id);
     }
@@ -119,6 +120,7 @@ class TextEditor extends React.Component {
 
   //recieve all commands from key bindings and applies changes
   handleKeyCommand(command) {
+    var self = this;
     if (command === "SAVE") {
       const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
@@ -127,14 +129,15 @@ class TextEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
-        this.setState({saveFlag: true});
-        console.log("SAVING");
+        //this.setState({saveFlag: true});
+        // console.log("SAVING");
         return true;
       })
       .catch(err => {
         console.log(err);
       });
-
+      self.setState({saveFlag: true});
+      console.log('SAVED');
     }
     const {editorState} = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
