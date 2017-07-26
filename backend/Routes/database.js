@@ -6,7 +6,7 @@ const hashPassword = require('../helper/passwordHash');
 //get all documents from user with userId
 //returns json object of docs user owns and docs s/he is collaborating on
 router.get('/user/:userId', function(req, res) {
-  console.log('database:', req.params.userId);
+  console.log('database getting all documents from user:', req.params.userId);
   var promises = [
     Document.find({owner: req.params.userId}),
     Document.find({ collabs: { "$in" : [req.params.userId]} })
@@ -59,7 +59,8 @@ router.post('/docs/save/:docId', (req, res)=> {
 //create a new documnet
 //returns the whole document object
 //are the passwords hashed already?
-router.post('docs/new', (req, res) => {
+router.post('/docs/new', (req, res) => {
+  console.log ("in router", req.body);
   var password = hashPassword(req.body.password);
   var title = req.body.title;
   var owner = req.body.owner; //user id
