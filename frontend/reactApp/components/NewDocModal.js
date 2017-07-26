@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, Modal, Icon  } from 'react-materialize';
+import { Button, Modal, Icon } from 'react-materialize';
 
 class NewDocModal extends React.Component {
   constructor(props) {
@@ -11,24 +11,26 @@ class NewDocModal extends React.Component {
     };
   }
 
+
   onSubmit(event) {
     event.preventDefault();
-    axios.post('/docs/new', {
+    axios.post('http://localhost:3000/docs/new', {
       title: this.state.title,
       password: this.state.password,
-      owner: this.props.owner
+      owner: this.props.id
     })
     .then((resp) => {
-      console.log('success', resp);
+      console.log('success IN ON CREATE DOC SUBMIT', resp.data.doc);
+      this.props.history.push('/docs/' + resp.data.doc._id);
     })
     .catch((err) => {
-      console.log('error loging in', err);
+      console.log('MODAL ERROR', err);
     });
   }
 
   onTitleChange(event) {
     this.setState({
-      username: event.target.value
+      title: event.target.value
     });
   }
 
@@ -43,8 +45,8 @@ class NewDocModal extends React.Component {
     return (
       <div>
         <Modal
-          header='Modal Header'
-          trigger={<Button waves='light'>Click to create document<Icon right>add</Icon></Button>}>
+          header='Create a new Document'
+          trigger={<a className="btn-floating btn-large waves-effect waves-light purple"><i className="material-icons">add</i></a>}>
             <div className="row">
               <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
                 <div className="row">
@@ -56,7 +58,7 @@ class NewDocModal extends React.Component {
                     <i className="material-icons prefix">lock</i>
                     <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
                   </div>
-                  <button className="btn waves-effect waves-light green accent-3" type="submit" value="Create new document" />
+                  <button className="btn waves-effect waves-light green accent-3" type="submit">Create</button>
                 </div>
               </form>
             </div>
