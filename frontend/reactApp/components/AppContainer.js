@@ -4,6 +4,7 @@ import Login from './Login';
 import Register from './Register';
 import DocPortal from './DocPortal';
 import DocLanding from './DocLanding';
+import axios from 'axios';
 
 class AppContainer extends React.Component {
   constructor(props){
@@ -11,9 +12,9 @@ class AppContainer extends React.Component {
     this.state = {
       loggedIn: false,
       id: ''
-    }
+    };
   }
-  componentDidMount(){
+  componentWillMount(){
     axios.get('http://localhost:3000/userID')
     .then((resp) => {
       if (resp.data.id){
