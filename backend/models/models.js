@@ -27,7 +27,8 @@ const documentSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User'
   },
-  password: String
+  password: String,
+  history: Array
 });
 
 const User = mongoose.model('User', userSchema);

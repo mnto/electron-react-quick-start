@@ -23,16 +23,12 @@ class TextEditor extends React.Component {
     this.state = {
       socket: io('http://localhost:3000/'),
       saveFlag: false,
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createEmpty(),
+      history: [],
     };
 
     //when something in the editor changes
     this.onChange = (editorState) => {
-      if (this.isSelection(editorState)) {
-        console.log("in on change is slection is true");
-        const selection = editorState.getSelection();
-        this.state.socket.emit("sendSelection", JSON.stringify(selection));
-      }
       this.setState({editorState: editorState, saveFlag: false});
       const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
@@ -62,7 +58,10 @@ class TextEditor extends React.Component {
         else {
           newState = EditorState.createEmpty();
         }
-        self.setState({editorState: newState});
+        console.log("made it here")
+        self.setState({editorState: newState, history: data.doc.history}, ()=>{
+          console.log(this.state, "STATE")
+        });
       }
       else {
         console.log("ERROR LOADING");
@@ -85,13 +84,6 @@ class TextEditor extends React.Component {
       const socketState = EditorState.createWithContent(socketCS);
       self.setState({editorState: socketState});
     });
-    this.state.socket.on('sendBackSelection', selectionStr => {
-      console.log("BACK IN FRONT");
-      const selectionRaw = JSON.parse(selectionStr);
-      // console.log(selectionRaw.getHasFocus());
-      // const sState = EditorState.forceSelection(this.state.editorState, selectionRaw);
-      // this.setState({editorState: sState});
-    });
   }
 
   componentWillUnmount() {
@@ -107,7 +99,7 @@ class TextEditor extends React.Component {
     })
     .then(resp => {
       console.log(resp);
-      this.setState({saveFlag: true});
+      this.setState({saveFlag: true, history: resp.data.doc.history});
     })
     .catch(err => {
       console.log(err);
@@ -122,13 +114,6 @@ class TextEditor extends React.Component {
     else {
       alert("You haven't saved your changes yet");
     }
-  }
-
-  isSelection(editorState) {
-    const selection = editorState.getSelection();
-    const start = selection.getStartOffset();
-    const end = selection.getEndOffset();
-    return start !== end;
   }
 
   //recieves all keyDown events.
@@ -152,13 +137,14 @@ class TextEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
-        this.setState({saveFlag: true});
+        this.setState({history: resp.data.doc.history});
         console.log("SAVING");
         return true;
       })
       .catch(err => {
         console.log(err);
       });
+      this.setState({saveFlag: true});
 
     }
     const {editorState} = this.state;
@@ -317,7 +303,16 @@ class TextEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
+  onHistClick(hist) {
+    console.log('click hist');
+    const rawCS =  JSON.parse(hist.text);
+    const contentState = convertFromRaw(rawCS);
+    var newState = EditorState.createWithContent(contentState);
+    this.setState({editorState: newState});
+  }
+
   render() {
+    const self = this;
 
     return (
       <div>
@@ -332,6 +327,20 @@ class TextEditor extends React.Component {
             <i className="material-icons left">chevron_left</i>
             Back to Document Portal
           </button>
+        </div>
+        <div className="historyContainer">
+
+            {self.state.history &&
+              <ul>
+              {self.state.history.map(function(hist, index){
+                return (<li
+                  onClick={self.onHistClick.bind(self, hist)}
+                  key={index}>
+                  <a>{hist.timestamp}</a>
+                </li>);
+              })}
+            </ul>
+            }
         </div>
         <div className="editorRoot">
           <InlineStyleControls
