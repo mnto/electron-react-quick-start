@@ -23,14 +23,34 @@ class TextEditor extends React.Component {
     this.state = {
       socket: io('http://localhost:3000/'),
       saveFlag: false,
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createEmpty(),
+      cursor: ''
     };
 
     //when something in the editor changes
     this.onChange = (editorState) => {
-      this.setState({editorState: editorState, saveFlag: false});
+
+      this.setState({
+        editorState: editorState,
+        saveFlag: false,
+        cursor: editorState.getSelection().getStartOffset()
+      });
       const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
+      const selection = this.state.editorState.getSelection();
+
+      // checks if no selected text, but locates the cursor
+      if(selection.isCollapsed()){
+        const content = this.state.editorState.getCurrentContent();
+        const selection = this.state.editorState.getSelection();
+        const cursorKey = selection.getStartKey();
+        const cursorOffset = selection.getStartOffset();
+        const cursor = content.getBlockForKey(cursorKey);
+        console.log("SELECTION STATE HERE", cursor);
+        // this.state.socket.emit("cursorLocation", cursor);
+      } else {
+        //here, handle when text is selected and not just a cursor
+      }
       this.state.socket.emit("sendContentState", strCS);
     };
 
@@ -82,7 +102,9 @@ class TextEditor extends React.Component {
       const socketState = EditorState.createWithContent(socketCS);
       self.setState({editorState: socketState});
     });
-
+    this.state.socket.on('sendBackCursorLocation', cursor => {
+      console.log("CURSOR LOCATION SENT BACK");
+    })
   }
 
   componentWillUnmount() {
