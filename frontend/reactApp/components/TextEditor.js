@@ -29,7 +29,26 @@ class TextEditor extends React.Component {
     //when something in the editor changes
     this.onChange = (editorState) => {
       this.setState({editorState: editorState, saveFlag: false});
-      const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+
+      //get selected test
+      var selectionState = editorState.getSelection();
+      var anchorKey = selectionState.getAnchorKey();
+      var currentContent = editorState.getCurrentContent();
+      var currentContentBlock = currentContent.getBlockForKey(anchorKey);
+      console.log('currentContentBlock:', currentContentBlock);
+      var start = selectionState.getStartOffset();
+      var end = selectionState.getEndOffset();
+      var selectedText = currentContentBlock.getText().slice(start, end);
+      console.log('selectedText:', selectedText);
+
+      if (selectedText.length > 0) {
+        this.setState({
+          editorState: RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT')
+        })
+      }
+
+
+      const rawCS = convertToRaw(this.state.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
       this.state.socket.emit("sendContentState", strCS);
     };
