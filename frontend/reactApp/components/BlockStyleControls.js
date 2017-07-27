@@ -21,31 +21,23 @@ const BlockStyleControls = (props) => {
     .getCurrentContent()
     .getBlockForKey(selection.getStartKey())
     .getType();
-
+  // let e = document.getElementById('block');
+  // let toggleStyle = e.options[e.selectedIndex].value;
   return (
     <div className="RichEditor-controls">
-      {BLOCK_TYPES.map((type) =>
-        // <div>
-          /* <div className="fixed-action-btn horizontal click-to-toggle">
-            <a className="btn-floating btn-large red">
-              <i className="large material-icons">mode_edit</i>
-            </a>
-            <ul>
-              <li><a className="btn-floating red"><i className="material-icons">insert_chart</i></a></li>
-              <li><a className="btn-floating yellow darken-1"><i className="material-icons">format_quote</i></a></li>
-              <li><a className="btn-floating green"><i className="material-icons">publish</i></a></li>
-              <li><a className="btn-floating blue"><i className="material-icons">attach_file</i></a></li>
-            </ul>
-          </div> */
-          <StyleButton
-            key={type.label}
-            active={type.style === blockType}
-            label={type.label}
-            onToggle={props.onToggle}
-            style={type.style}
-        />
-      // </div>
-      )}
+      {/* <select className="browser-default" onChange={this.props.onToggle}>
+        <option value="" disabled selected>Block Style</option> */}
+        {BLOCK_TYPES.map((type) =>
+          // <option value={type.label}>{type.label}</option>
+            <StyleButton
+              key={type.label}
+              active={type.style === blockType}
+              label={type.label}
+              onToggle={props.onToggle}
+              style={type.style}
+          />
+        )}
+      {/* </select> */}
     </div>
   );
 };

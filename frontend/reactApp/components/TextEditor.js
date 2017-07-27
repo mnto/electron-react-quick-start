@@ -15,76 +15,71 @@ import SizeControls from './SizeControls';
 import FontControls from './FontControls';
 import styles from '../../assets/stylesheets/textEditor.scss';
 import axios from 'axios';
-import io from 'socket.io-client';
 
 class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // socket: io('http://localhost:3000/')
+      socket: this.props.socket,
+      editorState: EditorState.createEmpty()
     };
 
     //when something in the editor changes
-    // this.onChange = (editorState) => {
-    //   console.log('ON CHANGE');
-    //   this.setState({editorState: editorState});
-    //   const rawCS= convertToRaw(this.props.editorState.getCurrentContent());
-    //   const strCS = JSON.stringify(rawCS);
-    //   this.state.socket.emit("sendContentState", strCS);
-    // };
+    this.onChange = (editorState) => {
+      console.log('ON CHANGE');
+      this.setState({editorState: editorState});
+      const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+      const strCS = JSON.stringify(rawCS);
+      this.props.socket.emit("sendContentState", strCS);
+    };
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
   }
 
   componentDidMount() {
-    console.log('TEXT EDITOR MOUNTING');
+    // this.props.socket.emit('started', 'hello world!');
+    //GET MOST RECENT FROM DOC DB
+    console.log("PROPS", this.props);
+    //Axios call to get the document
+    axios.get('http://localhost:3000/docs/' + this.props.id)
+    .then(({ data }) => {
+      if (data.success) {
+        console.log("DATA DOC", data.doc);
+        var newState;
+        if (data.doc.text) {
+          const rawCS =  JSON.parse(data.doc.text);
+          const contentState = convertFromRaw(rawCS);
+          newState = EditorState.createWithContent(contentState);
+        }
+        else {
+          newState = EditorState.createEmpty();
+        }
+        this.setState({editorState: newState});
+      }
+      else {
+        console.log("ERROR LOADING");
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+    this.state.socket.on('connect', () => {
+      console.log('CONNECTED TO SOCKETS');
+      this.state.socket.emit("documentId", this.props.id);
+    });
+    this.state.socket.on('errorMessage', message => {
+      console.log("ERROR", message);
+    });
+    this.state.socket.on('sendBackContentState', socketStr => {
+      const socketRaw =  JSON.parse(socketStr);
+      const socketCS = convertFromRaw(socketRaw);
+      const socketState = EditorState.createWithContent(socketCS);
+      this.setState({editorState: socketState});
+    });
+
   }
-  //
-  // componentDidMount() {
-  //   // this.props.socket.emit('started', 'hello world!');
-  //   //GET MOST RECENT FROM DOC DB
-  //   console.log("PROPS", this.props);
-  //   var self = this;
-  //   //Axios call to get the document
-  //   axios.get('http://localhost:3000/docs/' + this.props.id)
-  //   .then(({ data }) => {
-  //     if (data.success) {
-  //       console.log("DATA DOC", data.doc);
-  //       var newState;
-  //       if (data.doc.text) {
-  //         const rawCS =  JSON.parse(data.doc.text);
-  //         const contentState = convertFromRaw(rawCS);
-  //         newState = EditorState.createWithContent(contentState);
-  //       }
-  //       else {
-  //         newState = EditorState.createEmpty();
-  //       }
-  //       self.setState({editorState: newState});
-  //     }
-  //     else {
-  //       console.log("ERROR LOADING");
-  //     }
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-  //
-  //   this.state.socket.on('connect', () => {
-  //     console.log('CONNECTED TO SOCKETS');
-  //     this.state.socket.emit("documentId", this.props.id);
-  //   });
-  //   this.state.socket.on('errorMessage', message => {
-  //     console.log("ERROR", message);
-  //   });
-  //   this.state.socket.on('sendBackContentState', socketStr => {
-  //     const socketRaw =  JSON.parse(socketStr);
-  //     const socketCS = convertFromRaw(socketRaw);
-  //     const socketState = EditorState.createWithContent(socketCS);
-  //     self.setState({editorState: socketState});
-  //   });
-  //
-  // }
 
   componentWillUnMount() {
     this.state.socket.disconnect();
@@ -165,11 +160,29 @@ class TextEditor extends React.Component {
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
 
+
+  onSave(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
+      text: strCS
+    })
+    .then(resp => {
+      console.log(resp);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
   //toggles block type
   toggleBlockType(blockType) {
+    // let e = document.getElementById('block');
+    // let toggledStyle = e.options[e.selectedIndex].value;
     this.onChange(
       RichUtils.toggleBlockType(
-        this.props.editorState,
+        this.state.editorState,
         blockType
       )
     );
@@ -179,14 +192,14 @@ class TextEditor extends React.Component {
   toggleInlineStyle(inlineStyle) {
     this.onChange(
       RichUtils.toggleInlineStyle(
-        this.props.editorState,
+        this.state.editorState,
         inlineStyle
       )
     );
   }
 
   toggleAlign(toggledAlignment) {
-    const {editorState} = this.props;
+    const {editorState} = this.state;
     const selection = editorState.getSelection();
     // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(alignStyleMap)
@@ -217,7 +230,7 @@ class TextEditor extends React.Component {
 
   toggleColor(toggledColor) {
     console.log('color', colorStyleMap);
-    const {editorState} = this.props;
+    const {editorState} = this.state;
     const selection = editorState.getSelection();
     // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(colorStyleMap)
@@ -247,7 +260,7 @@ class TextEditor extends React.Component {
   }
 
   toggleSize(toggledSize) {
-    const {editorState} = this.props;
+    const {editorState} = this.state;
     const selection = editorState.getSelection();
     // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(sizeStyleMap)
@@ -277,7 +290,7 @@ class TextEditor extends React.Component {
   }
 
   toggleFont(toggledFont) {
-    const {editorState} = this.props;
+    const {editorState} = this.state;
     const selection = editorState.getSelection();
     // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(fontStyleMap)
@@ -309,54 +322,36 @@ class TextEditor extends React.Component {
   render() {
     console.log('props', this.props);
     return (
-      // <div>
-        // {/* <div> */}
-          // {/* <button
-          //   className="waves-effect waves-light btn col s5"
-          //   onClick={(e) => this.onBack(e)}>
-          //   <i className="material-icons left">chevron_left</i>
-          //   Back to Document Portal
-          // </button> */}
-        // {/* </div> */}
-      // {/* <div> */}
-        // {/* <button
-        //   onClick={(e) => this.onSave(e)}
-        //   className="btn waves-effect waves-light col s4 offset-s4">
-        //   Save Changes
-        //   <i className="material-icons left">save</i>
-        // </button> */}
-        // {/* <div>
-        //   <button
-        //     className="waves-effect waves-light btn col s5"
-        //     onClick={(e) => this.onBack(e)}>
-        //     <i className="material-icons left">chevron_left</i>
-        //     Back to Document Portal
-        //   </button>
-        // </div> */}
-        // {/* <div> */}
+      <div>
+        <button
+          onClick={(e) => this.onSave(e)}
+          className="btn waves-effect waves-light col s4 offset-s4">
+          Save Changes
+          <i className="material-icons left">save</i>
+        </button>
         <div className="editorRoot">
           <InlineStyleControls
-            editorState={this.props.editorState}
+            editorState={this.state.editorState}
             onToggle={this.toggleInlineStyle.bind(this)}
           />
           <AlignmentControls
-            editorState={this.props.editorState}
+            editorState={this.state.editorState}
             onToggle={this.toggleAlign.bind(this)}
           />
           <BlockStyleControls
-            editorState={this.props.editorState}
+            editorState={this.state.editorState}
             onToggle={this.toggleBlockType.bind(this)}
           />
           <ColorControls
-            editorState={this.props.editorState}
+            editorState={this.state.editorState}
             onToggle={this.toggleColor.bind(this)}
           />
           <SizeControls
-            editorState={this.props.editorState}
+            editorState={this.state.editorState}
             onToggle={this.toggleSize.bind(this)}
           />
           <FontControls
-            editorState={this.props.editorState}
+            editorState={this.state.editorState}
             onToggle={this.toggleSize.bind(this)}
           />
           <div className="editor" onClick={this.focus}>
@@ -364,14 +359,14 @@ class TextEditor extends React.Component {
               handleKeyCommand={this.handleKeyCommand.bind(this)}
               customStyleMap={customStyleMap}
               keyBindingFn={this.keyBindingFn.bind(this)}
-              editorState={this.props.editorState}
-              onChange={this.props.onChange.bind(this)}
+              editorState={this.state.editorState}
+              onChange={this.onChange.bind(this)}
               onTab={this.onTab.bind(this)}
               ref="editor"
             />
           </div>
         </div>
-  //     </div>
+      </div>
   //   </div>
   // </div>
     );
