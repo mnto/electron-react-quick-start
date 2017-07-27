@@ -8,7 +8,9 @@ class Register extends React.Component{
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      fName: '',
+      lName: ''
     };
   }
 
@@ -16,10 +18,13 @@ class Register extends React.Component{
     e.preventDefault();
     axios.post('http://localhost:3000/register', {
       username: this.state.username,
-      password: this.state.password
+      password: this.state.password,
+      fName: this.state.fName,
+      lName: this.state.lName
     })
       .then(() => {
         console.log("Successful registration! Going to login page.");
+        this.props.history.push('/');
       })
       .catch((err) => {
         console.log("Error with registration", err);
@@ -39,6 +44,18 @@ class Register extends React.Component{
     });
   }
 
+  handleFirstNameChange(event) {
+    this.setState({
+      fName: event.target.value
+    });
+  }
+
+  handleLastNameChange(event) {
+    this.setState({
+      lName: event.target.value
+    });
+  }
+
   render(){
     return(
       <div className="container register">
@@ -54,6 +71,14 @@ class Register extends React.Component{
                 <i className="material-icons prefix">lock</i>
                 <input id="icon_telephone" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)} />
                 <label htmlFor="icon_telephone">Password</label>
+              </div>
+              <div className="input-field col s6">
+                <input id="icon_telephone" type="text" className="validate" onChange={(e) => this.handleFirstNameChange(e)} />
+                <label htmlFor="icon_telephone">First Name</label>
+              </div>
+              <div className="input-field col s6">
+                <input id="icon_telephone" type="text" className="validate" onChange={(e) => this.handleLastNameChange(e)} />
+                <label htmlFor="icon_telephone">LastName</label>
               </div>
             </div>
             <div>

@@ -9,6 +9,14 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  fName: {
+    type: String,
+    required: true
+  },
+  lName: {
+    type: String,
+    required: true
+  }
 });
 
 const documentSchema = mongoose.Schema({

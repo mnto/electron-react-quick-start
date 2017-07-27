@@ -14,11 +14,6 @@ var socketExport = (io) => {
       socket.to(room).emit('sendBackContentState', cs);
     });
 
-    socket.on('sendSelection', selectionState => {
-      console.log("RECIEVED SELECTION");
-      socket.to(room).emit('sendBackSelection', selectionState);
-    });
-
     socket.on('disconnect', () => {
       console.log('socket disconnected');
       socket.leave(socket.theOneRoom);
