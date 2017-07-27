@@ -43,8 +43,8 @@ class DocLanding extends React.Component{
   }
 
   render(){
-    var id = this.state.id;
     var doc = this.state.document;
+    var userId = doc.owner._id;
 
     return(
       <div className="container page">
@@ -52,7 +52,7 @@ class DocLanding extends React.Component{
           {doc && <div className="description col s12">
 
             <h2>{doc.title}</h2>
-            <h6>Shareable ID: {id} </h6>
+            <h6>Shareable ID: {this.state.id} </h6>
             <p>Created by {doc.owner.username} on {doc.dateCreated}</p>
             {/* <p>Collaborators: {collabs}</p> */}
           </div>}
@@ -63,8 +63,8 @@ class DocLanding extends React.Component{
 
         </div>
         <TextEditor
-          id={id}
-          doc={this.state.document}
+          id={userId}
+          doc={doc}
           history={this.props.history}
         />
         <footer className="page-footer">

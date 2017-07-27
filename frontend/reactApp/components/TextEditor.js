@@ -102,8 +102,28 @@ class TextEditor extends React.Component {
       const socketState = EditorState.createWithContent(socketCS);
       self.setState({editorState: socketState});
     });
-    this.state.socket.on('sendBackCursorLocation', cursor => {
+    this.state.socket.on('sendBackCursorLocation', incomingSelectionObj => {
       console.log("CURSOR LOCATION SENT BACK");
+      let editorState = this.state.editorState;
+      const originalES = editorState;
+      const originalSelection = editorState.getSelection();
+
+      const incomingSelectionState = originalSelection.merge(incomingSelectionObj);
+      const temporaryES = EditorState.forceSelection(originalES, incomingSelectionState);
+      this.setState({ editorState: temporaryES }, () => {
+        const windowSelection = window.getSelection();
+        const range = windowSelection.getRangeAt(0);
+        const rectangle = range.getClientRects()[0];
+        console.log("RANGE", range);
+        console.log("RECTANGLE", rectangle);
+        const { top, left, height } = rects;
+        this.setState({
+          editorState: originalES,
+          top,
+          left,
+          height,
+        })
+      });
     })
   }
 
@@ -326,6 +346,17 @@ class TextEditor extends React.Component {
   render() {
     return (
       <div>
+        {this.state.top && (
+          <div style={{
+            position: 'absolute',
+            backgroundColor: 'red',
+            width: '2px',
+            height: this.state.height,
+            top: this.state.top,
+            left: this.state.left
+          }}>
+          </div>
+        )}
         <button
           onClick={(e) => this.onSave(e)}
           className="btn waves-effect waves-light col s4 offset-s4">
