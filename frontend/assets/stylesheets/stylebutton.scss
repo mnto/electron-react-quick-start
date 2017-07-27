@@ -5,8 +5,8 @@
   justify-content: space-between;
 }
 .styleButton {
-  background-color: $blue_gray;
-  color: $white;
+  background-color: $gray_white;
+  color: $pink;
   cursor: pointer;
   margin: 5px 18px;
   padding: 2px 0;
@@ -16,88 +16,15 @@
   border-radius: 2px;
   padding-left: 4px;
   padding-right: 4px;
+  width: 35px;
+  height: 35px;
+}
+.button {
+  display: inline-block;
 }
 .styleButton:hover{
-  background-color: $blue;
+  box-shadow: 1px 1px 1px 1px #888888;
 }
 .activeButton {
   background-color: $blue;
-}
-#H1 {
-  font-size: 40px;
-  font-weight: 400;
-}
-#H2 {
-  font-size: 35px;
-  font-weight: 400;
-}
-#H3 {
-  font-size: 30px;
-  font-weight: 400;
-}
-#H4 {
-  font-size: 25px;
-  font-weight: 400;
-}
-#H5 {
-  font-size: 20px;
-  font-weight: 400;
-}
-#H6 {
-  font-size: 15px;
-  font-weight: 400;
-}
-#CodeBlock, #Monospace {
-  font-family: 'Courier New';
-}
-#tiny {
-  font-size: 10px;
-}
-#small {
-  font-size: 12px;
-}
-#normal {
-  font-size: 14px;
-}
-#medium {
-  font-size: 16px;
-}
-#large {
-  font-size: 18px;
-}
-#Red {
-  color: $red;
-}
-#Orange {
-  color: $orange;
-}
-#Yellow {
-  color: $yellow;
-}
-#Green {
-  color: $green;
-}
-#Blue {
-  color: $blue;
-}
-#Blue:hover {
-  color: $white;
-}
-#Indigo {
-  color: $indigo;
-}
-#Violet {
-  color: $violet;
-}
-#Arial {
-  font-family: 'Arial';
-}
-#Georgia {
-  font-family: 'Georgia';
-}
-#CourierNew {
-  font-family: 'Courier New';
-}
-#TimesNewRoman {
-  font-family: 'Times New Roman';
 }

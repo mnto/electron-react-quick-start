@@ -15,8 +15,13 @@ import SizeControls from './SizeControls';
 import FontControls from './FontControls';
 import styles from '../../assets/stylesheets/textEditor.scss';
 import axios from 'axios';
+import COLORS from './colors';
+import FONTS from './fonts';
+import SIZES from './sizes';
+import BLOCK_TYPES from './blockTypes';
+import StyleButton from './StyleButton';
 
-class TextEditor extends React.Component {
+class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +50,7 @@ class TextEditor extends React.Component {
     axios.get('http://localhost:3000/docs/' + this.props.id)
     .then(({ data }) => {
       if (data.success) {
-        console.log("DATA DOC", data.doc);
+        //console.log("DATA DOC", data.doc);
         var newState;
         if (data.doc.text) {
           const rawCS =  JSON.parse(data.doc.text);
@@ -78,29 +83,7 @@ class TextEditor extends React.Component {
       const socketState = EditorState.createWithContent(socketCS);
       this.setState({editorState: socketState});
     });
-    this.state.socket.on('sendBackCursorLocation', incomingSelectionObj => {
-      console.log("CURSOR LOCATION SENT BACK");
-      let editorState = this.state.editorState;
-      const originalES = editorState;
-      const originalSelection = editorState.getSelection();
 
-      const incomingSelectionState = originalSelection.merge(incomingSelectionObj);
-      const temporaryES = EditorState.forceSelection(originalES, incomingSelectionState);
-      this.setState({ editorState: temporaryES }, () => {
-        const windowSelection = window.getSelection();
-        const range = windowSelection.getRangeAt(0);
-        const rectangle = range.getClientRects()[0];
-        console.log("RANGE", range);
-        console.log("RECTANGLE", rectangle);
-        const { top, left, height } = rects;
-        this.setState({
-          editorState: originalES,
-          top,
-          left,
-          height,
-        })
-      });
-    })
   }
 
   componentWillUnMount() {
@@ -197,7 +180,7 @@ class TextEditor extends React.Component {
       console.log(err);
     });
   }
-
+  //
   //toggles block type
   toggleBlockType(blockType) {
     // let e = document.getElementById('block');
@@ -219,7 +202,7 @@ class TextEditor extends React.Component {
       )
     );
   }
-
+  //
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
@@ -250,134 +233,166 @@ class TextEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
-  toggleColor(toggledColor) {
-    console.log('color', colorStyleMap);
-    const {editorState} = this.state;
-    const selection = editorState.getSelection();
-    // Let's just allow one color at a time. Turn off all active colors.
-    const nextContentState = Object.keys(colorStyleMap)
-      .reduce((contentState, color) => {
-        return Modifier.removeInlineStyle(contentState, selection, color);
-      }, editorState.getCurrentContent());
-    let nextEditorState = EditorState.push(
-      editorState,
-      nextContentState,
-      'change-inline-style'
-    );
-    const currentStyle = editorState.getCurrentInlineStyle();
-    // Unset style override for current color.
-    if (selection.isCollapsed()) {
-      nextEditorState = currentStyle.reduce((state, color) => {
-        return RichUtils.toggleInlineStyle(state, color);
-      }, nextEditorState);
+  onClick(toggleType, style) {
+    console.log('toggleType:', toggleType, 'style:', style);
+    if (toggleType === 'inline') {
+      this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, style));
+    } else {
+      this.onChange(RichUtils.toggleBlockType(this.state.editorState, style));
     }
-    // If the color is being toggled on, apply it.
-    if (!currentStyle.has(toggledColor)) {
-      nextEditorState = RichUtils.toggleInlineStyle(
-        nextEditorState,
-        toggledColor
-      );
-    }
-    this.onChange(nextEditorState);
+
   }
 
-  toggleSize(toggledSize) {
-    const {editorState} = this.state;
-    const selection = editorState.getSelection();
-    // Let's just allow one color at a time. Turn off all active colors.
-    const nextContentState = Object.keys(sizeStyleMap)
-      .reduce((contentState, size) => {
-        return Modifier.removeInlineStyle(contentState, selection, size);
-      }, editorState.getCurrentContent());
-    let nextEditorState = EditorState.push(
-      editorState,
-      nextContentState,
-      'change-inline-style'
-    );
-    const currentStyle = editorState.getCurrentInlineStyle();
-    // Unset style override for current color.
-    if (selection.isCollapsed()) {
-      nextEditorState = currentStyle.reduce((state, size) => {
-        return RichUtils.toggleInlineStyle(state, size);
-      }, nextEditorState);
-    }
-    // If the color is being toggled on, apply it.
-    if (!currentStyle.has(toggledSize)) {
-      nextEditorState = RichUtils.toggleInlineStyle(
-        nextEditorState,
-        toggledSize
-      );
-    }
-    this.onChange(nextEditorState);
+  onFontClick() {
+    this.onStyleClick("font", Object.keys(fontStyleMap));
   }
 
-  toggleFont(toggledFont) {
-    const {editorState} = this.state;
+  onColorClick() {
+    this.onStyleClick("color", Object.keys(colorStyleMap));
+  }
+
+  onSizeClick() {
+    this.onStyleClick("size", Object.keys(sizeStyleMap));
+  }
+
+  onAlignClick() {
+    this.onStyleClick("align", Object.keys(alignStyleMap));
+  }
+
+  onStyleClick(styleId, arr) {
+    let e = document.getElementById(styleId);
+    let toggledStyle = e.options[e.selectedIndex].value;
+    const { editorState } = this.state;
     const selection = editorState.getSelection();
-    // Let's just allow one color at a time. Turn off all active colors.
-    const nextContentState = Object.keys(fontStyleMap)
-      .reduce((contentState, font) => {
-        return Modifier.removeInlineStyle(contentState, selection, font);
-      }, editorState.getCurrentContent());
+    // remove current related styling (other colors || sizes || fonts)
+    const nextContentState = arr.reduce((contentState, style) => {
+      return Modifier.removeInlineStyle(contentState, selection, style);
+    }, editorState.getCurrentContent());
     let nextEditorState = EditorState.push(
       editorState,
       nextContentState,
       'change-inline-style'
     );
     const currentStyle = editorState.getCurrentInlineStyle();
-    // Unset style override for current color.
+    // Unset style override for current style.
     if (selection.isCollapsed()) {
-      nextEditorState = currentStyle.reduce((state, font) => {
-        return RichUtils.toggleInlineStyle(state, font);
+      nextEditorState = currentStyle.reduce((state, style) => {
+        return RichUtils.toggleInlineStyle(state, style);
       }, nextEditorState);
     }
-    // If the color is being toggled on, apply it.
-    if (!currentStyle.has(toggledFont)) {
+    // If the style is being toggled on, apply it.
+    if (!currentStyle.has(toggledStyle)) {
       nextEditorState = RichUtils.toggleInlineStyle(
         nextEditorState,
-        toggledFont
+        toggledStyle
       );
     }
+
     this.onChange(nextEditorState);
   }
 
   render() {
-    console.log('props', this.props);
+    var counter = 0;
+    var currentStyle = this.state.editorState.getCurrentInlineStyle();
+    const selection = this.state.editorState.getSelection();
+    const blockType = this.state.editorState
+      .getCurrentContent()
+      .getBlockForKey(selection.getStartKey())
+      .getType();
     return (
-      <div className="container">
+      <div className="container editorRoot">
         <div className="row">
-          <button
-            onClick={(e) => this.onSave(e)}
-            className="btn waves-effect waves-light">
-            Save Changes
-            <i className="material-icons left">save</i>
-          </button>
-          <div className="editorRoot">
-            <InlineStyleControls
-              editorState={this.state.editorState}
-              onToggle={this.toggleInlineStyle.bind(this)}
-            />
-            <AlignmentControls
-              editorState={this.state.editorState}
-              onToggle={this.toggleAlign.bind(this)}
-            />
-            <BlockStyleControls
-              editorState={this.state.editorState}
-              onToggle={this.toggleBlockType.bind(this)}
-            />
-            <ColorControls
-              editorState={this.state.editorState}
-              onToggle={this.toggleColor.bind(this)}
-            />
-            <SizeControls
-              editorState={this.state.editorState}
-              onToggle={this.toggleSize.bind(this)}
-            />
-            <FontControls
-              editorState={this.state.editorState}
-              onToggle={this.toggleSize.bind(this)}
-            />
-            <div className="editor" onClick={this.focus}>
+          <div className="editor col s12">
+            <div className="toolbar">
+              <select className="browser-default toolbar-selector" id="font" onChange={this.onFontClick.bind(this)}>
+                 <option value="" disabled selected>Font</option>
+                {FONTS.map(font =>
+                  <option key={counter++} value={font.style}> {font.style} </option>)}
+              </select>
+              <select className="browser-default toolbar-selector" id="color" onChange={this.onColorClick.bind(this)}>
+                <option disabled selected value="" key={counter++}>Color</option>
+                {COLORS.map(color => <
+                  option key={counter++}> {color.style} </option>)}
+              </select>
+              <select className="browser-default toolbar-selector" id="size" onChange={this.onSizeClick.bind(this)}>
+                <option disabled selected value="" key={counter++}>Font Size</option>
+                {SIZES.map(size =>
+                  <option key={counter++} value={size.style}> {size.style} </option>)}
+              </select>
+              <div className="buttons">
+                <StyleButton
+                  key='bold'
+                  active={currentStyle.has('BOLD')}
+                  label='Bold'
+                  onToggle={this.toggleInlineStyle.bind(this)}
+                  style='BOLD'>
+                </StyleButton>
+                <StyleButton
+                  key='italic'
+                  active={currentStyle.has('ITALIC')}
+                  label='Italic'
+                  onToggle={this.toggleInlineStyle.bind(this)}
+                  style='ITALIC'>
+                </StyleButton>
+                <StyleButton
+                  key='underline'
+                  active={currentStyle.has('UNDERLINE')}
+                  label='Underline'
+                  onToggle={this.toggleInlineStyle.bind(this)}
+                  style='UNDERLINE'>
+                </StyleButton>
+                <StyleButton
+                  key='ordered-list'
+                  active={'ordered-list-item' === blockType}
+                  label={'OL'}
+                  onToggle={this.toggleBlockType.bind(this)}
+                  style={'ordered-list-item'}>
+                </StyleButton>
+                <StyleButton
+                  key='unordered-list'
+                  active={'unordered-list-item' === blockType}
+                  label={'UL'}
+                  onToggle={this.toggleBlockType.bind(this)}
+                  style={'unordered-list-item'}>
+                </StyleButton>
+                <StyleButton
+                  key='blockquote'
+                  active={'blockquote' === blockType}
+                  label={'Blockquote'}
+                  onToggle={this.toggleBlockType.bind(this)}
+                  style={'blockquote'}>
+                </StyleButton>
+                <StyleButton
+                  key='code'
+                  active={'code-block' === blockType}
+                  label={'CodeBlock'}
+                  onToggle={this.toggleBlockType.bind(this)}
+                  style={'code-block'}>
+                </StyleButton>
+                <StyleButton
+                  key={'left'}
+                  active={currentStyle.has('left')}
+                  label='Left Align'
+                  onToggle={this.toggleAlign.bind(this)}
+                  style='left'>
+                </StyleButton>
+                <StyleButton
+                  key={'center'}
+                  active={currentStyle.has('center')}
+                  label='Center Align'
+                  onToggle={this.toggleAlign.bind(this)}
+                  style='center'>
+                </StyleButton>
+                <StyleButton
+                  key={'right'}
+                  active={currentStyle.has('right')}
+                  label='Right Align'
+                  onToggle={this.toggleAlign.bind(this)}
+                  style='right'>
+                </StyleButton>
+              </div>
+            </div>
+            <div className="textarea" onClick={this.focus}>
               <Editor
                 handleKeyCommand={this.handleKeyCommand.bind(this)}
                 customStyleMap={customStyleMap}
@@ -389,10 +404,18 @@ class TextEditor extends React.Component {
               />
             </div>
           </div>
+          <div className="col s12 save-btn">
+            <button
+              onClick={(e) => this.onSave(e)}
+              className="btn waves-effect waves-light">
+              Save Changes
+              <i className="material-icons left">save</i>
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-export default TextEditor;
+export default MyEditor;
