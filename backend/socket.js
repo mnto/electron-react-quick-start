@@ -5,6 +5,7 @@ var socketExport = (io) => {
     //Receive data from opening the document
     socket.on('documentId', (documentId) => {
       room = documentId.toString();
+      console.log(socket.theOneRoom);
       socket.join(room);
       console.log("joined room");
     });
@@ -18,9 +19,16 @@ var socketExport = (io) => {
       socket.to(room).emit('sendBackSelection', selectionState);
     });
 
+    socket.on('disconnect', () => {
+      console.log('socket disconnected');
+      socket.leave(socket.theOneRoom);
+      socket.broadcast.to(room).emit('userLeft');
+    });
+
     socket.on('errorMessage', (err) => {
       console.log("ERROR", err);
     });
+
   });
 };
 

@@ -28,30 +28,19 @@ class TextEditor extends React.Component {
 
     //when something in the editor changes
     this.onChange = (editorState) => {
+      const selection = editorState.getSelection();
+
+      if (this.previousHighlight) {
+        editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
+        editorState = RichUtils.toggleInlineStyle(editorState, 'UNHIGHLIGHT');
+      }
       if (this.isSelection(editorState)) {
         console.log("in on change is slection is true");
-        const selection = editorState.getSelection();
-        this.state.socket.emit("sendSelection", JSON.stringify(selection));
+        editorState = RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT');
+        this.previousHighlight = editorState.getSelection();
       }
+      
       this.setState({editorState: editorState, saveFlag: false});
-
-      //get selected test
-      var selectionState = editorState.getSelection();
-      var anchorKey = selectionState.getAnchorKey();
-      var currentContent = editorState.getCurrentContent();
-      var currentContentBlock = currentContent.getBlockForKey(anchorKey);
-      console.log('currentContentBlock:', currentContentBlock);
-      var start = selectionState.getStartOffset();
-      var end = selectionState.getEndOffset();
-      var selectedText = currentContentBlock.getText().slice(start, end);
-      console.log('selectedText:', selectedText);
-
-      if (selectedText.length > 0) {
-        this.setState({
-          editorState: RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT')
-        })
-      }
-
 
       const rawCS = convertToRaw(this.state.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
@@ -60,6 +49,21 @@ class TextEditor extends React.Component {
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
+
+    this.state.socket.on('userLeft', () => {
+      console.log('user left');
+    });
+
+    this.state.socket.on('sendBackContentState', socketStr => {
+      const socketRaw =  JSON.parse(socketStr);
+      const socketCS = convertFromRaw(socketRaw);
+      const socketState = EditorState.createWithContent(socketCS);
+      this.setState({ editorState: socketState });
+    });
+
+    this.state.socket.on('errorMessage', message => {
+      console.log("ERROR", message);
+    });
   }
 
   componentDidMount() {
@@ -94,22 +98,6 @@ class TextEditor extends React.Component {
     this.state.socket.on('connect', () => {
       console.log('CONNECTED TO SOCKETS');
       this.state.socket.emit("documentId", this.props.id);
-    });
-    this.state.socket.on('errorMessage', message => {
-      console.log("ERROR", message);
-    });
-    this.state.socket.on('sendBackContentState', socketStr => {
-      const socketRaw =  JSON.parse(socketStr);
-      const socketCS = convertFromRaw(socketRaw);
-      const socketState = EditorState.createWithContent(socketCS);
-      self.setState({editorState: socketState});
-    });
-    this.state.socket.on('sendBackSelection', selectionStr => {
-      console.log("BACK IN FRONT");
-      const selectionRaw = JSON.parse(selectionStr);
-      // console.log(selectionRaw.getHasFocus());
-      // const sState = EditorState.forceSelection(this.state.editorState, selectionRaw);
-      // this.setState({editorState: sState});
     });
   }
 
