@@ -4,13 +4,16 @@ import styles from '../../assets/stylesheets/docLanding.scss';
 import axios from 'axios';
 import io from 'socket.io-client';
 import { convertFromRaw, convertToRaw, EditorState} from 'draft-js';
+import { Button } from 'react-materialize';
+import { Link } from 'react-router-dom';
 
 
 class DocLanding extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      id: '',
+      docId: '',
+      userId: '',
       document: '',
       // editorState: EditorState.createEmpty(),
       socket: io('http://localhost:3000/')
@@ -65,13 +68,17 @@ class DocLanding extends React.Component{
 
   componentWillMount(){
     const docId = this.props.match.params.docId;
-    this.setState({id: docId});
+    this.setState({ docId });
     console.log('ID', docId);
     axios.get('http://localhost:3000/docs/'+ docId)
-    .then(({data}) => {
+    .then(({ data }) => {
       if (data.success) {
         //console.log('DOC', data);
-        this.setState({document: data.doc});
+        console.log("OWNER", data.doc.owner);
+        this.setState({
+          document: data.doc,
+          userId: data.doc.owner
+        });
         //console.log("THIS IS THE STATE", this.state);
         // var newState;
         // if (data.doc.text) {
@@ -85,7 +92,7 @@ class DocLanding extends React.Component{
         // this.setState({editorState: newState});
       }
       else {
-        console.log("DOCUMENT NOT FOUND");
+        console.log("DOCUMENT NOT FOUND", data.error);
       }
     })
     .catch((err) => {
@@ -106,33 +113,35 @@ class DocLanding extends React.Component{
     // });
   }
 
-  onBack(e) {
-    e.preventDefault();
-    console.log('state in back', this.state);
-    // if (this.state.saveFlag && this.state.buttonClicked) {
-    this.props.history.push('/user/' + this.props.id);
-    // }
-    // else {
-    //   alert("You haven't saved your changes yet");
-    // }
-  }
+  // onBack(e) {
+  //   e.preventDefault();
+  //   console.log('state in back', this.state);
+  //   // if (this.state.saveFlag && this.state.buttonClicked) {
+  //   this.props.history.push('/user/' + this.state.userId);
+  //   // }
+  //   // else {
+  //   //   alert("You haven't saved your changes yet");
+  //   // }
+  // }
 
   render(){
-    var doc = this.state.document;
-    var userId = doc.owner._id;
+    const doc = this.state.document;
+    const docId = this.state.docId;
+    const userId = this.state.userId;
 
     return(
       <div className="container page">
         <div className="row">
-          <button
+          {/* <button
             className="waves-effect waves-light btn col s4"
             onClick={(e) => this.onBack(e)}>
             <i className="material-icons left">chevron_left</i>
             Back to Document Portal
-          </button>
+          </button> */}
+          <Link to={'/user/' + userId}><Button waves='light'>Back to Document Portal</Button></Link>
           {doc && <div className="description col s12">
             <h2>{doc.title}</h2>
-            <p><span className="bold">Shareable ID:</span> {id} </p>
+            <p><span className="bold">Shareable ID:</span> {docId} </p>
             <p><span className="bold">Created by </span> {doc.owner.fName + ' ' + doc.owner.lName}
                 <span className="bold"> on</span> {new Date(doc.dateCreated).toLocaleDateString()}
             </p>
@@ -145,8 +154,9 @@ class DocLanding extends React.Component{
           </div>}
         </div>
         <MyEditor
-          id={id}
-          doc={this.state.document}
+          id={docId}
+          user={userId}
+          doc={doc}
           history={this.props.history}
           onChange={this.onChange}
           // editorState={this.state.editorState}

@@ -63,7 +63,7 @@ class MyEditor extends React.Component {
         this.setState({editorState: newState});
       }
       else {
-        console.log("ERROR LOADING");
+        console.log("ERROR LOADING DOC DATA", data.error);
       }
     })
     .catch(err => {
@@ -89,22 +89,6 @@ class MyEditor extends React.Component {
   componentWillUnMount() {
     this.state.socket.disconnect();
   }
-
-  // onSave(e) {
-  //   e.preventDefault();
-  //   const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-  //   const strCS = JSON.stringify(rawCS);
-  //   axios.post('http://localhost:3000/docs/save/' + this.props.id, {
-  //     text: strCS
-  //   })
-  //   .then(resp => {
-  //     console.log(resp);
-  //     // this.setState({saveFlag: true});
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-  // }
 
   //recieves all keyDown events.
   //helps us define custom key bindings

@@ -14,6 +14,7 @@ class AppContainer extends React.Component {
       id: ''
     };
   }
+
   componentWillMount(){
     axios.get('http://localhost:3000/userID')
     .then((resp) => {
@@ -22,13 +23,15 @@ class AppContainer extends React.Component {
           loggedIn: true,
           id: resp.data.id
         });
+      } else {
+        return console.log(resp.data.message);
       }
     })
     .catch((err) => {
-      console.log("ERROR WITH GETTING USERID FOR APP COMPONENT");
+      console.log("ERROR WITH GETTING USERID FOR APP COMPONENT", err);
     });
-
   }
+
   render() {
     console.log('app container');
     return (
