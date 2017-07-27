@@ -27,7 +27,8 @@ class MyEditor extends React.Component {
     super(props);
     this.state = {
       socket: this.props.socket,
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createEmpty(),
+      history: [],
     };
 
     //when something in the editor changes
@@ -58,7 +59,7 @@ class MyEditor extends React.Component {
         else {
           newState = EditorState.createEmpty();
         }
-        this.setState({editorState: newState});
+        this.setState({editorState: newState, history: data.doc.history});
       }
       else {
         console.log("ERROR LOADING");
@@ -88,6 +89,23 @@ class MyEditor extends React.Component {
     this.state.socket.disconnect();
   }
 
+  onSave(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
+      text: strCS
+    })
+    .then(resp => {
+      console.log(resp);
+      this.setState({history: resp.data.doc.history});
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
+
   //recieves all keyDown events.
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
@@ -109,6 +127,7 @@ class MyEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
+        this.setState({history: resp.data.doc.history});
         return true;
       })
       .catch(err => {
@@ -130,20 +149,7 @@ class MyEditor extends React.Component {
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
 
-  onSave(e) {
-    e.preventDefault();
-    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-    const strCS = JSON.stringify(rawCS);
-    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
-      text: strCS
-    })
-    .then(resp => {
-      console.log(resp);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  }
+
   //
   //toggles block type
   toggleBlockType(blockType) {
@@ -252,7 +258,16 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
+  onHistClick(hist) {
+    console.log('click hist');
+    const rawCS =  JSON.parse(hist.text);
+    const contentState = convertFromRaw(rawCS);
+    var newState = EditorState.createWithContent(contentState);
+    this.setState({editorState: newState});
+  }
+
   render() {
+    const self = this;
     var counter = 0;
     var currentStyle = this.state.editorState.getCurrentInlineStyle();
     const selection = this.state.editorState.getSelection();
@@ -352,6 +367,19 @@ class MyEditor extends React.Component {
                   style='right'>
                 </StyleButton>
               </div>
+            </div>
+            <div className="historyContainer">
+                {self.state.history &&
+                  <ul>
+                  {self.state.history.map(function(hist, index){
+                    return (<li
+                      onClick={self.onHistClick.bind(self, hist)}
+                      key={index}>
+                      <a>{hist.timestamp}</a>
+                    </li>);
+                  })}
+                </ul>
+                }
             </div>
             <div className="textarea" onClick={this.focus}>
               <Editor
