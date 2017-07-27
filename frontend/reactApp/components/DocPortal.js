@@ -99,8 +99,7 @@ class DocPortal extends React.Component{
           <ul>
             {this.state.ownDocs.map(
               (doc) => {
-                let link = '/docs/' + doc.id;
-                return <li key={doc.id}><Link to={link}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
+                return <li key={doc._id}><Link to={`/docs/${doc._id}`}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
               }
             )}
           </ul>
@@ -110,8 +109,7 @@ class DocPortal extends React.Component{
           <ul>
             {this.state.collabDocs.map(
               (doc) => {
-                let link = '/docs/' + doc.id;
-                return <li key={doc.id}><Link to={link}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
+                return <li key={doc._id}><Link to={`/docs/${doc._id}`}><Button floating large waves='light' icon='insert_drive_file' /></Link>{doc.title}</li>;
               }
             )}
           </ul>

@@ -33,7 +33,7 @@ router.get('/docs/:docId', (req, res)=> {
   .exec((err, doc) => {
     if (err) {
       console.log(err);
-      res.json({ success: false, error: err });
+      res.json({ success: false });
     } else {
       res.json({success: true, doc: doc});
     }

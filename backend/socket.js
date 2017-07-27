@@ -17,11 +17,6 @@ var socketExport = (io) => {
     socket.on('errorMessage', (err) => {
       console.log("ERROR", err);
     });
-
-    // socket.on('cursorLocation', (cursor) => {
-    //   console.log("CURSOR MOVES");
-    //   socket.to(room).emit('sendBackCursorLocation', cursor);
-    // })
   });
 };
 
