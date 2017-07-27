@@ -2,12 +2,19 @@
   margin-top: 50px;
   margin-bottom: 50px;
 }
+.row {
+  margin-bottom: 0;
+}
 .description {
   margin-top: 20px;
   margin-bottom: 20px;
+  font-size: 15px;
 }
 .waves-effect {
   background-color: rgba(126,87,194, 1);
+}
+.bold {
+  font-weight: 700;
 }
 .page-footer {
   margin-top: 50px;
