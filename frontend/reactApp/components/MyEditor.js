@@ -1,18 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js';
+import { ContentState,
+         convertFromRaw,
+         convertToRaw,
+         Editor,
+         EditorState,
+         RichUtils,
+         getDefaultKeyBinding,
+         KeyBindingUtil,
+         Modifier } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
-import BlockStyleControls from './BlockStyleControls';
-import InlineStyleControls from './InlineStyleControls';
 import alignStyleMap from './customMaps/alignStyleMap';
 import colorStyleMap from './customMaps/colorStyleMap';
 import sizeStyleMap from './customMaps/sizeStyleMap';
 import fontStyleMap from './customMaps/fontStyleMap';
 import customStyleMap from './customMaps/customStyleMap';
-import AlignmentControls from './AlignmentControls';
-import ColorControls from './ColorControls';
-import SizeControls from './SizeControls';
-import FontControls from './FontControls';
 import styles from '../../assets/stylesheets/textEditor.scss';
 import axios from 'axios';
 import COLORS from './colors';
@@ -43,14 +44,11 @@ class MyEditor extends React.Component {
   }
 
   componentDidMount() {
-    // this.props.socket.emit('started', 'hello world!');
     //GET MOST RECENT FROM DOC DB
-    //console.log("PROPS", this.props);
     //Axios call to get the document
     axios.get('http://localhost:3000/docs/' + this.props.id)
     .then(({ data }) => {
       if (data.success) {
-        //console.log("DATA DOC", data.doc);
         var newState;
         if (data.doc.text) {
           const rawCS =  JSON.parse(data.doc.text);
@@ -90,22 +88,6 @@ class MyEditor extends React.Component {
     this.state.socket.disconnect();
   }
 
-  // onSave(e) {
-  //   e.preventDefault();
-  //   const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-  //   const strCS = JSON.stringify(rawCS);
-  //   axios.post('http://localhost:3000/docs/save/' + this.props.id, {
-  //     text: strCS
-  //   })
-  //   .then(resp => {
-  //     console.log(resp);
-  //     // this.setState({saveFlag: true});
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-  // }
-
   //recieves all keyDown events.
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
@@ -127,11 +109,6 @@ class MyEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
-        // this.setState({saveFlag: true});
-        // console.log("SAVING");
-        // this.setState({saveFlag: true}, function () {
-        //   console.log('state in handle', this.state);
-        // });
         return true;
       })
       .catch(err => {
@@ -147,24 +124,11 @@ class MyEditor extends React.Component {
     return false;
   }
 
-  // onBack(e) {
-  //   //e.preventDefault();
-  //   this.setState({buttonClicked: true});
-  //   console.log('state in back', this.state);
-  //   // if (this.state.saveFlag && this.state.buttonClicked) {
-  //   this.props.history.push('/user/' + this.props.id);
-  //   // }
-  //   // else {
-  //   //   alert("You haven't saved your changes yet");
-  //   // }
-  // }
-
   //on tab event
   onTab(e) {
     const depth = 4;
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
-
 
   onSave(e) {
     e.preventDefault();
@@ -183,8 +147,6 @@ class MyEditor extends React.Component {
   //
   //toggles block type
   toggleBlockType(blockType) {
-    // let e = document.getElementById('block');
-    // let toggledStyle = e.options[e.selectedIndex].value;
     this.onChange(
       RichUtils.toggleBlockType(
         this.state.editorState,
@@ -206,7 +168,6 @@ class MyEditor extends React.Component {
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
-    // Let's just allow one color at a time. Turn off all active colors.
     const nextContentState = Object.keys(alignStyleMap)
       .reduce((contentState, alignment) => {
         return Modifier.removeInlineStyle(contentState, selection, alignment);
