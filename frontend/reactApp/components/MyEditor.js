@@ -30,20 +30,9 @@ class MyEditor extends React.Component {
     };
 
     this.previousHighlight = null;
-
-    this.state.socket.on('sendBackContentState', socketStr => {
-      const socketRaw =  JSON.parse(socketStr);
-      const socketCS = convertFromRaw(socketRaw);
-      const socketState = EditorState.createWithContent(socketCS);
-      this.setState({editorState: socketState});
-    });
-
-    this.state.socket.on('errorMessage', message => {
-      console.log("ERROR", message);
-    });
-
     //when something in the editor changes
     this.onChange = (editorState) => {
+      //console.log('ON CHANGE');
       const selection = editorState.getSelection();
 
       if (this.previousHighlight) {
@@ -54,21 +43,16 @@ class MyEditor extends React.Component {
 
       editorState = RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT');
       this.previousHighlight = editorState.getSelection();
+      this.setState({editorState: editorState});
 
-      //console.log('ON CHANGE');
       const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
       this.props.socket.emit("sendContentState", strCS);
-      this.setState({editorState});
+      this.setState({editorState: editorState});
     };
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
-    
-    this.state.socket.on('connect', () => {
-      console.log('CONNECTED TO SOCKETS');
-      this.state.socket.emit("documentId", this.props.id);
-    });
   }
 
   componentDidMount() {
@@ -98,6 +82,21 @@ class MyEditor extends React.Component {
     .catch(err => {
       console.log(err);
     });
+
+    this.state.socket.on('connect', () => {
+      console.log('CONNECTED TO SOCKETS');
+      this.state.socket.emit("documentId", this.props.id);
+    });
+    this.state.socket.on('errorMessage', message => {
+      console.log("ERROR", message);
+    });
+    this.state.socket.on('sendBackContentState', socketStr => {
+      const socketRaw =  JSON.parse(socketStr);
+      const socketCS = convertFromRaw(socketRaw);
+      const socketState = EditorState.createWithContent(socketCS);
+      this.setState({editorState: socketState});
+    });
+
   }
 
   componentWillUnMount() {
