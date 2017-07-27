@@ -10,8 +10,12 @@ var socketExport = (io) => {
     });
 
     socket.on('sendContentState', (cs) => {
-      console.log("SEND CONTENT STATE", cs);
       socket.to(room).emit('sendBackContentState', cs);
+    });
+
+    socket.on('sendSelection', selectionState => {
+      console.log("RECIEVED SELECTION");
+      socket.to(room).emit('sendBackSelection', selectionState);
     });
 
     socket.on('errorMessage', (err) => {
