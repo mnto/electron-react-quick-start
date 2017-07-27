@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js';
+import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, SelectionState , Modifier } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
 import BlockStyleControls from './BlockStyleControls';
 import InlineStyleControls from './InlineStyleControls';
@@ -28,6 +28,11 @@ class TextEditor extends React.Component {
 
     //when something in the editor changes
     this.onChange = (editorState) => {
+      if (this.isSelection(editorState)) {
+        console.log("in on change is slection is true");
+        const selection = editorState.getSelection();
+        this.state.socket.emit("sendSelection", JSON.stringify(selection));
+      }
       this.setState({editorState: editorState, saveFlag: false});
 
       //get selected test
@@ -56,8 +61,6 @@ class TextEditor extends React.Component {
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
   }
-
-
 
   componentDidMount() {
     // this.props.socket.emit('started', 'hello world!');
@@ -101,7 +104,13 @@ class TextEditor extends React.Component {
       const socketState = EditorState.createWithContent(socketCS);
       self.setState({editorState: socketState});
     });
-
+    this.state.socket.on('sendBackSelection', selectionStr => {
+      console.log("BACK IN FRONT");
+      const selectionRaw = JSON.parse(selectionStr);
+      // console.log(selectionRaw.getHasFocus());
+      // const sState = EditorState.forceSelection(this.state.editorState, selectionRaw);
+      // this.setState({editorState: sState});
+    });
   }
 
   componentWillUnmount() {
@@ -132,6 +141,13 @@ class TextEditor extends React.Component {
     else {
       alert("You haven't saved your changes yet");
     }
+  }
+
+  isSelection(editorState) {
+    const selection = editorState.getSelection();
+    const start = selection.getStartOffset();
+    const end = selection.getEndOffset();
+    return start !== end;
   }
 
   //recieves all keyDown events.
@@ -321,6 +337,7 @@ class TextEditor extends React.Component {
   }
 
   render() {
+
     return (
       <div>
         <button
