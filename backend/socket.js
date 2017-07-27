@@ -5,13 +5,13 @@ var socketExport = (io) => {
     //Receive data from opening the document
     socket.on('documentId', (documentId) => {
       room = documentId.toString();
-      console.log(socket.theOneRoom);
       socket.join(room);
+      socket.people =
       console.log("joined room");
     });
 
     socket.on('sendContentState', (cs) => {
-      socket.to(room).emit('sendBackContentState', cs);
+      socket.broadcast.to(room).emit('sendBackContentState', cs);
     });
 
     socket.on('disconnect', () => {

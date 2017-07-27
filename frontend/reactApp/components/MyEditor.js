@@ -30,29 +30,45 @@ class MyEditor extends React.Component {
     };
 
     this.previousHighlight = null;
-    //when something in the editor changes
-    this.onChange = (editorState) => {
-      //console.log('ON CHANGE');
-      const selection = editorState.getSelection();
-
-      if (this.previousHighlight) {
-        editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
-        editorState = RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT');
-        editorState = EditorState.acceptSelection(editorState, selection);
-      }
-
-      editorState = RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT');
-      this.previousHighlight = editorState.getSelection();
-      this.setState({editorState: editorState});
-
-      const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-      const strCS = JSON.stringify(rawCS);
-      this.props.socket.emit("sendContentState", strCS);
-      this.setState({editorState: editorState});
-    };
+    console.log('constructor highlight', this.previousHighlight);
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
+
+    this.state.socket.on('sendBackContentState', socketStr => {
+      const socketRaw =  JSON.parse(socketStr);
+      const socketCS = convertFromRaw(socketRaw);
+      const socketState = EditorState.createWithContent(socketCS);
+      this.setState({editorState: socketState});
+    });
+  }
+
+  onChange(editorState) {
+    //console.log('ON CHANGE');
+    const selection = editorState.getSelection();
+
+    if (this.previousHighlight) {
+      editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
+      editorState = RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT');
+      editorState = EditorState.acceptSelection(editorState, selection);
+      this.previousHighlight = null;
+    }
+
+    if (selection.getStartOffset() === selection.getEndOffset()) {
+      console.log('selection', selection);
+      this.props.socket.emit('cursorMove', selection);
+    } else {
+      editorState = RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT');
+      this.previousHighlight = editorState.getSelection();
+    }
+
+    console.log(this.previousHighlight);
+    //this.setState({editorState: editorState});
+
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    this.props.socket.emit("sendContentState", strCS);
+    this.setState({editorState: editorState});
   }
 
   componentDidMount() {
@@ -90,13 +106,6 @@ class MyEditor extends React.Component {
     this.state.socket.on('errorMessage', message => {
       console.log("ERROR", message);
     });
-    this.state.socket.on('sendBackContentState', socketStr => {
-      const socketRaw =  JSON.parse(socketStr);
-      const socketCS = convertFromRaw(socketRaw);
-      const socketState = EditorState.createWithContent(socketCS);
-      this.setState({editorState: socketState});
-    });
-
   }
 
   componentWillUnMount() {
