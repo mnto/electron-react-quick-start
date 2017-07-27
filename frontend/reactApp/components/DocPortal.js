@@ -87,11 +87,12 @@ class DocPortal extends React.Component{
 
   openNav() {
     var width = document.getElementById("portal").offsetWidth;
-    var margin = ((width - 250) * 0.075 + 250).toString() + 'px';
-    console.log('OPEN MARGIN', margin);
+    var marginLeft = ((width - 250) * 0.075 + 250).toString() + 'px';
+    var marginRight = ((width - 250) * 0.075).toString() + 'px';
+    console.log('OPEN MARGIN', marginLeft, marginRight);
     document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginLeft = margin;
-    document.getElementById("main").style.marginRight = margin;
+    document.getElementById("main").style.marginLeft = marginLeft;
+    document.getElementById("main").style.marginRight = marginRight;
     document.getElementById("sideBtn").style.zIndex = "-1";
   }
 
