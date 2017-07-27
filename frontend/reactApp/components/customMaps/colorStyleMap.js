@@ -1,4 +1,7 @@
 const colorStyleMap = {
+  automatic: {
+    color: '#000000',
+  },
   red: {
     color: '#f44336',
   },

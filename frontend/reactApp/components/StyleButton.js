@@ -15,9 +15,8 @@ class StyleButton extends React.Component {
     if (this.props.active) {
       className += ' activeButton';
     }
-
     return (
-      <span id={this.props.label} className={className} onMouseDown={this.onToggle}>
+      <div id={this.props.label} className={className + ' button'} onMouseDown={this.onToggle}>
         {this.props.label === 'Blockquote' ? <i className="material-icons">format_quote</i> :
         this.props.label === 'UL' ? <i className="material-icons">format_list_numbered</i> :
         this.props.label === 'OL' ? <i className="material-icons">format_list_bulleted</i> :
@@ -29,9 +28,10 @@ class StyleButton extends React.Component {
         this.props.label === 'Center Align' ? <i className="material-icons">format_align_center</i> :
         this.props.label === 'Right Align' ? <i className="material-icons">format_align_right</i> :
         this.props.label === 'Right Align' ? <i className="material-icons">format_align_right</i> :
+        this.props.label === 'CodeBlock' ? <i className="material-icons">code</i> :
         this.props.label
       }
-      </span>
+    </div>
     );
   }
 }

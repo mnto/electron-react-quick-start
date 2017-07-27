@@ -15,24 +15,23 @@ import SizeControls from './SizeControls';
 import FontControls from './FontControls';
 import styles from '../../assets/stylesheets/textEditor.scss';
 import axios from 'axios';
-import io from 'socket.io-client';
 
 class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      socket: io('http://localhost:3000/'),
-      saveFlag: false,
-      editorState: EditorState.createEmpty(),
       history: [],
+      socket: this.props.socket,
+      editorState: EditorState.createEmpty()
     };
 
     //when something in the editor changes
     this.onChange = (editorState) => {
-      this.setState({editorState: editorState, saveFlag: false});
+      //console.log('ON CHANGE');
+      this.setState({editorState: editorState});
       const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
-      this.state.socket.emit("sendContentState", strCS);
+      this.props.socket.emit("sendContentState", strCS);
     };
 
     //when the editor is selected/in focus - default by draft
@@ -42,8 +41,7 @@ class TextEditor extends React.Component {
   componentDidMount() {
     // this.props.socket.emit('started', 'hello world!');
     //GET MOST RECENT FROM DOC DB
-    console.log("PROPS", this.props);
-    var self = this;
+    //console.log("PROPS", this.props);
     //Axios call to get the document
     axios.get('http://localhost:3000/docs/' + this.props.id)
     .then(({ data }) => {
@@ -58,10 +56,7 @@ class TextEditor extends React.Component {
         else {
           newState = EditorState.createEmpty();
         }
-        console.log("made it here")
-        self.setState({editorState: newState, history: data.doc.history}, ()=>{
-          console.log(this.state, "STATE")
-        });
+        self.setState({editorState: newState, history: data.doc.history})
       }
       else {
         console.log("ERROR LOADING");
@@ -82,11 +77,11 @@ class TextEditor extends React.Component {
       const socketRaw =  JSON.parse(socketStr);
       const socketCS = convertFromRaw(socketRaw);
       const socketState = EditorState.createWithContent(socketCS);
-      self.setState({editorState: socketState});
+      this.setState({editorState: socketState});
     });
   }
 
-  componentWillUnmount() {
+  componentWillUnMount() {
     this.state.socket.disconnect();
   }
 
@@ -99,21 +94,11 @@ class TextEditor extends React.Component {
     })
     .then(resp => {
       console.log(resp);
-      this.setState({saveFlag: true, history: resp.data.doc.history});
+      this.setState({history: resp.data.doc.history});
     })
     .catch(err => {
       console.log(err);
     });
-  }
-
-  onBack(e) {
-    e.preventDefault();
-    if (this.state.saveFlag) {
-      this.props.history.push('/user/' + this.props.id);
-    }
-    else {
-      alert("You haven't saved your changes yet");
-    }
   }
 
   //recieves all keyDown events.
@@ -130,7 +115,7 @@ class TextEditor extends React.Component {
   //recieve all commands from key bindings and applies changes
   handleKeyCommand(command) {
     if (command === "SAVE") {
-      const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+      const rawCS= convertToRaw(this.props.editorState.getCurrentContent());
       const strCS = JSON.stringify(rawCS);
       axios.post('http://localhost:3000/docs/save/' + this.props.id, {
         text: strCS
@@ -138,14 +123,11 @@ class TextEditor extends React.Component {
       .then(resp => {
         console.log(resp);
         this.setState({history: resp.data.doc.history});
-        console.log("SAVING");
         return true;
       })
       .catch(err => {
         console.log(err);
       });
-      this.setState({saveFlag: true});
-
     }
     const {editorState} = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -159,11 +141,13 @@ class TextEditor extends React.Component {
   //on tab event
   onTab(e) {
     const depth = 4;
-    this.onChange(RichUtils.onTab(e, this.state.editorState, depth));
+    this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
 
   //toggles block type
   toggleBlockType(blockType) {
+    // let e = document.getElementById('block');
+    // let toggledStyle = e.options[e.selectedIndex].value;
     this.onChange(
       RichUtils.toggleBlockType(
         this.state.editorState,
@@ -313,70 +297,52 @@ class TextEditor extends React.Component {
 
   render() {
     const self = this;
-
+    
     return (
-      <div>
-        <button
-          onClick={(e) => this.onSave(e)}
-          className="btn waves-effect waves-light col s4 offset-s4">
-          Save Changes
-          <i className="material-icons left">save</i>
-        </button>
-        <div>
-          <button className="waves-effect waves-light btn col s5" onClick={(e) => this.onBack(e)}>
-            <i className="material-icons left">chevron_left</i>
-            Back to Document Portal
+      <div className="container">
+        <div className="row">
+          <button
+            onClick={(e) => this.onSave(e)}
+            className="btn waves-effect waves-light">
+            Save Changes
+            <i className="material-icons left">save</i>
           </button>
-        </div>
-        <div className="historyContainer">
-
-            {self.state.history &&
-              <ul>
-              {self.state.history.map(function(hist, index){
-                return (<li
-                  onClick={self.onHistClick.bind(self, hist)}
-                  key={index}>
-                  <a>{hist.timestamp}</a>
-                </li>);
-              })}
-            </ul>
-            }
-        </div>
-        <div className="editorRoot">
-          <InlineStyleControls
-            editorState={this.state.editorState}
-            onToggle={this.toggleInlineStyle.bind(this)}
-          />
-          <AlignmentControls
-            editorState={this.state.editorState}
-            onToggle={this.toggleAlign.bind(this)}
-          />
-          <BlockStyleControls
-            editorState={this.state.editorState}
-            onToggle={this.toggleBlockType.bind(this)}
-          />
-          <ColorControls
-            editorState={this.state.editorState}
-            onToggle={this.toggleColor.bind(this)}
-          />
-          <SizeControls
-            editorState={this.state.editorState}
-            onToggle={this.toggleSize.bind(this)}
-          />
-          <FontControls
-            editorState={this.state.editorState}
-            onToggle={this.toggleSize.bind(this)}
-          />
-          <div className="editor" onClick={this.focus}>
-            <Editor
-              handleKeyCommand={this.handleKeyCommand.bind(this)}
-              customStyleMap={customStyleMap}
-              keyBindingFn={this.keyBindingFn.bind(this)}
+          <div className="editorRoot">
+            <InlineStyleControls
               editorState={this.state.editorState}
-              onChange={this.onChange}
-              onTab={this.onTab.bind(this)}
-              ref="editor"
+              onToggle={this.toggleInlineStyle.bind(this)}
             />
+            <AlignmentControls
+              editorState={this.state.editorState}
+              onToggle={this.toggleAlign.bind(this)}
+            />
+            <BlockStyleControls
+              editorState={this.state.editorState}
+              onToggle={this.toggleBlockType.bind(this)}
+            />
+            <ColorControls
+              editorState={this.state.editorState}
+              onToggle={this.toggleColor.bind(this)}
+            />
+            <SizeControls
+              editorState={this.state.editorState}
+              onToggle={this.toggleSize.bind(this)}
+            />
+            <FontControls
+              editorState={this.state.editorState}
+              onToggle={this.toggleSize.bind(this)}
+            />
+            <div className="editor" onClick={this.focus}>
+              <Editor
+                handleKeyCommand={this.handleKeyCommand.bind(this)}
+                customStyleMap={customStyleMap}
+                keyBindingFn={this.keyBindingFn.bind(this)}
+                editorState={this.state.editorState}
+                onChange={this.onChange.bind(this)}
+                onTab={this.onTab.bind(this)}
+                ref="editor"
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -52,7 +52,9 @@ var auth = (passport) => {
 
     const newUser = new User({
       username: req.body.username,
-      password: password
+      password: password,
+      fName: req.body.fName,
+      lName: req.body.lName
     });
 
     newUser.save()
