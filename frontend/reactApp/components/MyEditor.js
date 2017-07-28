@@ -1,5 +1,6 @@
 import React from 'react';
 import { ContentState,
+         CompositeDecorator,
          convertFromRaw,
          convertToRaw,
          Editor,
@@ -25,12 +26,17 @@ import toastr from 'toastr';
 toastr.options.preventDuplicates = true;
 toastr.options.timeOut = 1000;
 
+const SearchHighlight = (props) => (
+  <span className="search-highlight">{props.children}</span>
+);
+
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       socket: this.props.socket,
       editorState: EditorState.createEmpty(),
+      searchStr: ''
     };
 
     //when something in the editor changes
@@ -106,7 +112,6 @@ class MyEditor extends React.Component {
     });
   }
 
-
   //recieves all keyDown events.
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
@@ -150,7 +155,6 @@ class MyEditor extends React.Component {
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
 
-
   //
   //toggles block type
   toggleBlockType(blockType) {
@@ -171,7 +175,8 @@ class MyEditor extends React.Component {
       )
     );
   }
-  //
+  
+  // toggles alignment styling
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
@@ -259,6 +264,36 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
+  findWithRegex(regex, contentBlock, callback) {
+    const text = contentBlock.getText();
+    let matchArr, start, end;
+    while ((matchArr = regex.exec(text)) !== null) {
+      // matchArr format: [searchStr, index: index where the result appears, input: input]
+      start = matchArr.index;
+      end = start + matchArr[0].length;
+      callback(start, end);
+    }
+  }
+
+  generateDecorator(highlightTerm) {
+    const regex = new RegExp(highlightTerm, 'g');
+    return new CompositeDecorator([{
+      strategy: (contentBlock, callback) => {
+        if (highlightTerm !== '') {
+          this.findWithRegex(regex, contentBlock, callback);
+        }
+      },
+      component: SearchHighlight,
+    }]);
+  }
+
+  onChangeSearch(e) {
+    this.setState({
+      searchStr: e.target.value,
+      editorState: EditorState.set(this.state.editorState,
+        { decorator: this.generateDecorator(e.target.value) })});
+  }
+
   onHistClick(e) {
     e.preventDefault();
     const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
@@ -280,7 +315,6 @@ class MyEditor extends React.Component {
 
 
   render() {
-    const self = this;
     var counter = 0;
     var currentStyle = this.state.editorState.getCurrentInlineStyle();
     const selection = this.state.editorState.getSelection();
@@ -291,6 +325,10 @@ class MyEditor extends React.Component {
     return (
       <div className="container editorRoot">
         <div className="row">
+          <div className="input-field">
+            <input onChange={(e) => this.onChangeSearch(e)} id="search" type="search" required placeholder="Search for words in this document"/>
+            <label className="label-icon" htmlFor="search"><i className="material-icons">search</i></label>
+          </div>
           <div className="editor col s12">
             <div className="toolbar">
               <select className="browser-default toolbar-selector" id="font" onChange={this.onFontClick.bind(this)}>

@@ -102,7 +102,6 @@ class DocLanding extends React.Component{
               Portal
             </button>
             <a href="#" className="brand-logo center">Nodebook</a>
-            <button id="sideBtn" className="btn" onClick={this.openNav}></button>
             <form className="right">
               <div className="input-field">
                 <input id="search" type="search" required/>

@@ -57,7 +57,6 @@ class Login extends React.Component {
         <nav>
           <div className="nav-wrapper">
             <a href="#" className="brand-logo center">Nodebook</a>
-            <button id="sideBtn" className="btn" onClick={this.openNav}></button>
           </div>
         </nav>
         <div className="container login">
