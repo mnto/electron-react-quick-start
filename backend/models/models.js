@@ -36,7 +36,8 @@ const documentSchema = mongoose.Schema({
     ref: 'User'
   },
   password: String,
-  history: Array
+  history: Array,
+  current: String
 });
 
 const User = mongoose.model('User', userSchema);

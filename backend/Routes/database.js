@@ -114,6 +114,23 @@ router.get('/docs/check/:docId', (req, res) => {
   });
 });
 
+router.post('/docs/current/:docId', (req, res) => {
+  const text = req.body.text
+  Document.findById(req.params.docId, (err, doc) => {
+    if (err) {
+      console.log(err);
+      res.json({success: false, message: err});
+    } else if (!doc) {
+      console.log("no document found");
+      res.json({success: false, message: "no doc found"});
+    } else {
+      doc.current = text;
+      doc.save();
+      res.json({success: true, doc: doc});
+    }
+  });
+});
+
 router.post('/docs/add-collab', (req, res) => {
   Document.findById(req.body.docId, (err, doc) => {
     if (err){

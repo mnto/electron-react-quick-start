@@ -5,6 +5,7 @@ import Register from './Register';
 import DocPortal from './DocPortal';
 import DocLanding from './DocLanding';
 import axios from 'axios';
+import History from './History';
 
 class AppContainer extends React.Component {
   constructor(props){
@@ -41,6 +42,7 @@ class AppContainer extends React.Component {
             {/* <Route exact={true} path="/docs/:docId" render={(docId) => <DocLanding id={docId} />}/> */}
             <Route exact={true} path="/" component={Login}/>
             <Route exact={true} path="/logout" component={Login}/>
+            <Route exact={true} path='/history/:docId' component={History}/>
             <Route render={() => <h1>404, Sorry fam.</h1>} />
         </Switch>
       </HashRouter>
