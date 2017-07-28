@@ -64,7 +64,7 @@ class MyEditor extends React.Component {
       const incomingCursor = originalSelec.merge(cursor);
       const temporaryES = EditorState.forceSelection(originalES, incomingCursor);
 
-      this.setState({ editorState: temporaryES}, () => {
+      this.setState({ editorState: temporaryES }, () => {
         const windowSelection = window.getSelection();
         const range = windowSelection.getRangeAt(0);
         const rectangle = range.getClientRects()[0];
@@ -88,7 +88,7 @@ class MyEditor extends React.Component {
 
   //when something in the editor changes
   onChange(editorState) {
-    const selection = this.state.editorState.getSelection();
+    const selection = editorState.getSelection();
 
     if (this.previousHighlight){
       editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
