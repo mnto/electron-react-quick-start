@@ -1,19 +1,11 @@
 import React from 'react';
 import axios from 'axios';
-import diff from 'diff';
 import customStyleMap from './customMaps/customStyleMap';
+import styles from '../../assets/stylesheets/history.scss';
 
-import { ContentState,
-         convertFromRaw,
-         convertToRaw,
+import { convertFromRaw,
          Editor,
-         EditorState,
-         RichUtils,
-         getDefaultKeyBinding,
-         KeyBindingUtil,
-         Modifier } from 'draft-js';
-const {hasCommandModifier} = KeyBindingUtil;
-
+         EditorState } from 'draft-js';
 class History extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +32,7 @@ class History extends React.Component {
           currCS: newState,
           histArr: data.doc.history
         });
-        console.log("state", this.state)
+        console.log("state", this.state);
       }
       else {
         console.log("DOCUMENT NOT FOUND");
@@ -67,48 +59,55 @@ class History extends React.Component {
 
   render() {
     var self = this;
-    return(
+    return (
       <div>
-        <button
-          className="waves-effect waves-light btn col s4"
-          onClick={(e) => this.onBack(e)}>
-          <i className="material-icons left">chevron_left</i>
-          Back to Document
-        </button>
-        <div>
-          <h2>Current Version</h2>
-          <div className="textarea">
-            <Editor
-              customStyleMap={customStyleMap}
-              editorState={this.state.currCS}
-              readOnly={true}
-              ref="editor"
-            />
+        <nav>
+          <div className="nav-wrapper">
+            <a href="#" className="brand-logo center">Nodebook</a>
+            <button
+              className="left btn"
+              onClick={(e) => this.onBack(e)}>
+              <i className="material-icons left">chevron_left</i>
+              Document
+            </button>
           </div>
-        </div>
-        <div>
-          <h2>Past saved versions</h2>
-          {this.state.histArr &&
-            <ul>
-              {self.state.histArr.map(function(hist, index){
-                return (<li
-                  onClick={self.onHistClick.bind(self, hist)}
-                  key={index}>
-                  <a>{hist.timestamp}</a>
-                </li>);
-              })}
-            </ul>
-          }
-        </div>
-        <div>
-          <h2>Old Version</h2>
-          <div className="textarea">
-            <Editor
-              customStyleMap={customStyleMap}
-              editorState={this.state.oldCS}
-              readOnly={true}
-              ref="editor"
-            />
+        </nav>
+        <div className="revision-page">
+          <div className="revision">
+            <h2>Revision</h2>
+            {this.state.histArr && <div className="collection">
+                {self.state.histArr.map(function(hist, index){
+                  return (
+                    <button
+                      className="timestamp btn"
+                      onClick={self.onHistClick.bind(self, hist)}
+                      key={index}>{new Date(hist.timestamp).toLocaleString()}
+                    </button>
+                  );
+                })}
+            </div>}
+          </div>
+          <div className="current">
+            <h2>Current Version</h2>
+            <div className="textarea">
+              <Editor
+                customStyleMap={customStyleMap}
+                editorState={this.state.currCS}
+                readOnly={true}
+                ref="editor"
+              />
+            </div>
+          </div>
+          <div className="past">
+            <h2>Old Version</h2>
+            <div className="textarea">
+              <Editor
+                customStyleMap={customStyleMap}
+                editorState={this.state.oldCS}
+                readOnly={true}
+                ref="editor"
+              />
+            </div>
           </div>
         </div>
       </div>

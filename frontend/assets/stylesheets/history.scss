@@ -1,0 +1,48 @@
+@import "colors";
+
+.revision-page {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0;
+}
+.revision {
+  background-color: rgba(79,195,247, 0.45);
+  margin-left: 0;
+  margin-right: 0;
+  flex: 1;
+}
+.revision h2 {
+  text-align: center;
+  color: $deep_purple_lighten
+}
+.current {
+  flex: 2;
+  overflow-x: auto;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.current h2 {
+  text-align: center;
+  color: $pink;
+}
+.past {
+  flex: 2;
+  margin-right: 2px;
+  overflow-x: auto;
+}
+.past h2 {
+  text-align: center;
+  color: $indigo;
+}
+.timestamp {
+  width: 100%;
+  text-align: center;
+  background-color: $blue;
+  margin-top: 2px;
+}
+.timestamp:hover {
+  background-color: #ef9a9a;
+}
+.sideBtn {
+
+}

@@ -16,53 +16,7 @@ class DocLanding extends React.Component{
       socket: io('http://localhost:3000/')
     };
   }
-
-    //
-    // componentDidMount() {
-    //   // this.props.socket.emit('started', 'hello world!');
-    //   //GET MOST RECENT FROM DOC DB
-    //   console.log("PROPS", this.props);
-    //   var self = this;
-    //   //Axios call to get the document
-    //   axios.get('http://localhost:3000/docs/' + this.props.id)
-    //   .then(({ data }) => {
-    //     if (data.success) {
-    //       console.log("DATA DOC", data.doc);
-    //       var newState;
-    //       if (data.doc.text) {
-    //         const rawCS =  JSON.parse(data.doc.text);
-    //         const contentState = convertFromRaw(rawCS);
-    //         newState = EditorState.createWithContent(contentState);
-    //       }
-    //       else {
-    //         newState = EditorState.createEmpty();
-    //       }
-    //       self.setState({editorState: newState});
-    //     }
-    //     else {
-    //       console.log("ERROR LOADING");
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
-    //
-    //   this.state.socket.on('connect', () => {
-    //     console.log('CONNECTED TO SOCKETS');
-    //     this.state.socket.emit("documentId", this.props.id);
-    //   });
-    //   this.state.socket.on('errorMessage', message => {
-    //     console.log("ERROR", message);
-    //   });
-    //   this.state.socket.on('sendBackContentState', socketStr => {
-    //     const socketRaw =  JSON.parse(socketStr);
-    //     const socketCS = convertFromRaw(socketRaw);
-    //     const socketState = EditorState.createWithContent(socketCS);
-    //     self.setState({editorState: socketState});
-    //   });
-    //
-    // }
-
+  
   componentWillMount(){
     const docId = this.props.match.params.docId;
     this.setState({id: docId});
