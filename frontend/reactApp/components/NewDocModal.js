@@ -46,7 +46,10 @@ class NewDocModal extends React.Component {
       <div>
         <Modal
           header='Create a new Document'
-          trigger={<a className="btn-floating btn-large waves-effect waves-light purple"><i className="material-icons">add</i></a>}>
+          trigger={
+            <a className="btn-floating right btn-large waves-effect waves-light deep-purple darken-4">
+              <i className="material-icons">add</i>
+            </a>}>
             <div className="row">
               <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
                 <div className="row">
@@ -58,7 +61,7 @@ class NewDocModal extends React.Component {
                     <i className="material-icons prefix">lock</i>
                     <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
                   </div>
-                  <button className="btn waves-effect waves-light green accent-3" type="submit">Create</button>
+                  <button className="btn waves-effect waves-light blue darken-1 col s2 offset-s5" type="submit">Create</button>
                 </div>
               </form>
             </div>

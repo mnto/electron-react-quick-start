@@ -23,7 +23,7 @@
   display: inline-block;
 }
 .styleButton:hover{
-  box-shadow: 1px 1px 1px 1px #888888;
+  border: 1px solid $blue;
 }
 .activeButton {
   background-color: $blue;

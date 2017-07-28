@@ -266,17 +266,17 @@ class MyEditor extends React.Component {
           <div className="editor col s12">
             <div className="toolbar">
               <select className="browser-default toolbar-selector" id="font" onChange={this.onFontClick.bind(this)}>
-                 <option value="" disabled selected>Font</option>
+                 <option value="" disabled>Font</option>
                 {FONTS.map(font =>
                   <option key={counter++} value={font.style}> {font.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="color" onChange={this.onColorClick.bind(this)}>
-                <option disabled selected value="" key={counter++}>Color</option>
+                <option disabled value="" key={counter++}>Color</option>
                 {COLORS.map(color => <
                   option key={counter++}> {color.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="size" onChange={this.onSizeClick.bind(this)}>
-                <option disabled selected value="" key={counter++}>Font Size</option>
+                <option disabled value="" key={counter++}>Font Size</option>
                 {SIZES.map(size =>
                   <option key={counter++} value={size.style}> {size.style} </option>)}
               </select>
@@ -368,9 +368,9 @@ class MyEditor extends React.Component {
           <div className="col s12 save-btn">
             <button
               onClick={(e) => this.onSave(e)}
-              className="btn waves-effect waves-light">
-              Save Changes
+              className="btn waves-effect waves-light col">
               <i className="material-icons left">save</i>
+              Save Changes
             </button>
           </div>
         </div>
