@@ -16,6 +16,11 @@
 .bold {
   font-weight: 700;
 }
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .page-footer {
   margin-top: 50px;
   background-color: rgba(126, 87, 194, 1) !important;

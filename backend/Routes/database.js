@@ -30,6 +30,7 @@ router.get('/user/:userId', function(req, res) {
 router.get('/docs/:docId', (req, res)=> {
   Document.findById(req.params.docId)
   .populate('owner')
+  .populate('collabs')
   .exec((err, doc) => {
     if (err) {
       console.log(err);
@@ -131,6 +132,22 @@ router.post('/docs/add-collab', (req, res) => {
         doc.save();
         res.redirect('/user/' + req.body.userId);
       }
+    }
+  });
+});
+
+
+// get the user object
+router.get('/users/:userId', (req, res) => {
+  User.findById(req.params.userId, (err, user) => {
+    if (err) {
+      res.json({success: false, message: err});
+    }
+    else if (!user) {
+      res.json({success: false, message: "No such user was found"});
+    }
+    else {
+      res.json({success: true, user: user});
     }
   });
 });

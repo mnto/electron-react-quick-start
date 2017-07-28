@@ -58,40 +58,48 @@ class Register extends React.Component{
 
   render(){
     return(
-      <div className="container register">
-        <div className="row">
-          <form className="col s12" onSubmit={(e) => this.onSubmit(e)} method="POST" action="/register">
-            <div className="row">
-              <div className="input-field col s6">
-                <i className="material-icons prefix">account_box</i>
-                <input id="icon_prefix" type="text" className="validate" onChange={(e) => this.handleUsernameChange(e)} />
-                <label htmlFor="icon_prefix">Username</label>
+      <div>
+        <nav>
+          <div className="nav-wrapper">
+            <a href="#" className="brand-logo center">Nodebook</a>
+            <button id="sideBtn" className="btn" onClick={this.openNav}></button>
+          </div>
+        </nav>
+        <div className="container register">
+          <div className="row">
+            <form className="col s12" onSubmit={(e) => this.onSubmit(e)} method="POST" action="/register">
+              <div className="row">
+                <div className="input-field col s6">
+                  <i className="material-icons prefix">account_box</i>
+                  <input id="icon_prefix" type="text" className="validate" onChange={(e) => this.handleUsernameChange(e)} />
+                  <label htmlFor="icon_prefix">Username</label>
+                </div>
+                <div className="input-field col s6">
+                  <i className="material-icons prefix">lock</i>
+                  <input id="icon_telephone" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)} />
+                  <label htmlFor="icon_telephone">Password</label>
+                </div>
+                <div className="input-field col s6">
+                  <input id="icon_telephone" type="text" className="validate" onChange={(e) => this.handleFirstNameChange(e)} />
+                  <label htmlFor="icon_telephone">First Name</label>
+                </div>
+                <div className="input-field col s6">
+                  <input id="icon_telephone" type="text" className="validate" onChange={(e) => this.handleLastNameChange(e)} />
+                  <label htmlFor="icon_telephone">Last Name</label>
+                </div>
               </div>
-              <div className="input-field col s6">
-                <i className="material-icons prefix">lock</i>
-                <input id="icon_telephone" type="password" className="validate" onChange={(e) => this.handlePasswordChange(e)} />
-                <label htmlFor="icon_telephone">Password</label>
+              <div>
+                <button className="btn center-align waves-effect waves-light blue darken-1 accent-3 col s4 offset-s4 reg-btn" type="submit" name="action">
+                  <i className="material-icons right">send</i>
+                  Register!
+                </button>
+                <Link className="btn center-align waves-effect waves-light col s4 offset-s4 back-btn" to="/">
+                  <i className="material-icons left">chevron_left</i>
+                  Login
+                </Link>
               </div>
-              <div className="input-field col s6">
-                <input id="icon_telephone" type="text" className="validate" onChange={(e) => this.handleFirstNameChange(e)} />
-                <label htmlFor="icon_telephone">First Name</label>
-              </div>
-              <div className="input-field col s6">
-                <input id="icon_telephone" type="text" className="validate" onChange={(e) => this.handleLastNameChange(e)} />
-                <label htmlFor="icon_telephone">LastName</label>
-              </div>
-            </div>
-            <div>
-              <button className="btn waves-effect waves-light green accent-3 col s4 offset-s4 reg-btn" type="submit" name="action">
-                <i className="material-icons right">send</i>
-                Register!
-              </button>
-              <Link className="waves-effect btn-flat col s4 offset-s4 back-btn" to="/">
-                <i className="material-icons left">chevron_left</i>
-                Login
-              </Link>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     );
