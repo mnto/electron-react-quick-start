@@ -137,7 +137,7 @@ class DocPortal extends React.Component{
             <form className="right" onSubmit={this.onSearch}>
               <div className="input-field">
                 <input id="search" type="search" required/>
-                <label className="label-icon" for="search"><i className="material-icons">search</i></label>
+                <label className="label-icon" htmlFor="search"><i className="material-icons">search</i></label>
                 <i className="material-icons">keyboard_return</i>
               </div>
             </form>
