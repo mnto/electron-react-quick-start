@@ -14,7 +14,6 @@ class DocLanding extends React.Component{
       docId: '',
       userId: '',
       document: '',
-      // editorState: EditorState.createEmpty(),
     };
 
   }
@@ -26,7 +25,6 @@ class DocLanding extends React.Component{
     axios.get('http://localhost:3000/docs/'+ docId)
     .then(({ data }) => {
       if (data.success) {
-        //console.log('DOC', data);
         console.log("OWNER", data.doc.owner);
         this.setState({
           document: data.doc,
@@ -50,12 +48,6 @@ class DocLanding extends React.Component{
     return(
       <div className="container page">
         <div className="row">
-          {/* <button
-            className="waves-effect waves-light btn col s4"
-            onClick={(e) => this.onBack(e)}>
-            <i className="material-icons left">chevron_left</i>
-            Back to Document Portal
-          </button> */}
           <Link to={'/user/' + userId}><Button waves='light'>Back to Document Portal</Button></Link>
           {doc && <div className="description col s12">
             <h2>{doc.title}</h2>
@@ -64,7 +56,7 @@ class DocLanding extends React.Component{
                 <span className="bold"> on</span> {new Date(doc.dateCreated).toLocaleDateString()}
             </p>
             <div><span className="bold">Collaborators:</span>
-              {doc.collabs.map(collab => <p>{collab.fName + ' ' + collab.lName}</p>)}
+              {doc.collabs.map(collab => <p key={collab._id}>{collab.fName + ' ' + collab.lName}</p>)}
             </div>
           </div>}
           {!doc && <div className="description col s12">
@@ -77,7 +69,6 @@ class DocLanding extends React.Component{
           doc={doc}
           history={this.props.history}
           onChange={this.onChange}
-          // editorState={this.state.editorState}
         />
         <footer className="page-footer">
           <div className="container">

@@ -2,7 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 
-import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js';
+import {
+  ContentState,
+  convertFromRaw,
+  convertToRaw,
+  Editor,
+  EditorState,
+  RichUtils,
+  getDefaultKeyBinding,
+  KeyBindingUtil,
+  SelectionState,
+  Modifier } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
 import BlockStyleControls from './BlockStyleControls';
 import InlineStyleControls from './InlineStyleControls';
@@ -11,6 +21,7 @@ import colorStyleMap from './customMaps/colorStyleMap';
 import sizeStyleMap from './customMaps/sizeStyleMap';
 import fontStyleMap from './customMaps/fontStyleMap';
 import customStyleMap from './customMaps/customStyleMap';
+// import millennialStyleMap from './customMaps/millennialStyleMap';
 import AlignmentControls from './AlignmentControls';
 import ColorControls from './ColorControls';
 import SizeControls from './SizeControls';
@@ -27,26 +38,36 @@ class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createEmpty(),
+      userIndex: null,
+      socket:io('http://localhost:3000/')
     };
 
-    this.socket = io('http://localhost:3000/');
+    // this.state.socket = ;
+    const self = this;
 
     this.previousHighlight = null;
 
-    this.socket.on('connect', () => {
+    this.state.socket.on('connect', () => {
       console.log('CONNECTED TO SOCKETS');
     });
 
-    this.socket.on('joinedRoom', () => {
-      console.log("JOINED THE ROOM");
+    this.state.socket.on('joinedRoom', (index) => {
+      console.log("JOINED THE ROOM", index);
+      this.setState({ userIndex: index });
     });
 
-    this.socket.on('errorMessage', (message) => {
+    this.state.socket.on('tooManyUsers', (userLength) => {
+      console.log("TOO MANY USERS, REDIRECTING TO DOC PORTAL", userLength);
+      const redirect = '/user/' + this.props.user;
+      this.props.history.push(redirect);
+    });
+
+    this.state.socket.on('errorMessage', (message) => {
       console.log("ERROR", message);
     });
 
-    this.socket.on('sendBackContentState', (socketStr) => {
+    this.state.socket.on('sendBackContentState', (socketStr) => {
       const socketRaw =  JSON.parse(socketStr);
       const socketCS = convertFromRaw(socketRaw);
       const socketState = EditorState.createWithContent(socketCS);
@@ -54,7 +75,7 @@ class MyEditor extends React.Component {
       console.log("SET STATE AFTER SENDING BACK CONTENT STATE");
     });
 
-    this.socket.on('sendBackCursorLocation', cursor => {
+    this.state.socket.on('sendBackCursorLocation', cursor => {
       console.log("CURSOR LOCATION COMETH", cursor);
 
       let editorState = this.state.editorState;
@@ -68,8 +89,6 @@ class MyEditor extends React.Component {
         const windowSelection = window.getSelection();
         const range = windowSelection.getRangeAt(0);
         const rectangle = range.getClientRects()[0];
-        console.log("RANGE", range);
-        console.log("RECTANGLE", rectangle);
         const { top, left, bottom } = rectangle;
         this.setState({
           editorState: originalES,
@@ -80,7 +99,7 @@ class MyEditor extends React.Component {
       });
     });
 
-    this.socket.emit('documentId', this.props.id);
+
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
@@ -92,32 +111,38 @@ class MyEditor extends React.Component {
 
     if (this.previousHighlight){
       editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
-      editorState = RichUtils.toogleInlineStyle(editorState, 'RED');
+      editorState = RichUtils.toggleInlineStyle(editorState, this.state.userIndex);
       editorState = EditorState.acceptSelection(editorState, selection);
       this.previousHighlight = null;
     }
 
     if (selection.getStartOffset() === selection.getEndOffset()){
-      console.log('selection', selection);
-      this.socket.emit('cursorLocation', selection);
+      console.log("SENDING CURSOR LOCATION");
+      this.state.socket.emit('cursorLocation', selection);
     } else {
-      editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      editorState = RichUtils.toggleInlineStyle(editorState, this.state.userIndex);
       this.previousHighlight = editorState.getSelection();
     }
 
     //console.log('ON CHANGE');
     const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
     const strCS = JSON.stringify(rawCS);
-    this.socket.emit("sendContentState", strCS);
+    this.state.socket.emit('sendContentState', strCS);
 
     this.setState({ editorState });
-  };
+  }
 
   componentDidMount() {
     axios.get('http://localhost:3000/docs/' + this.props.id)
     .then(({ data }) => {
       if (data.success) {
         //console.log("DATA DOC", data.doc);
+        const docInfo = {
+          documentId: this.props.id,
+          socketId: this.state.socket.id
+        };
+        this.state.socket.emit('documentId', docInfo);
+
         var newState;
         if (data.doc.text) {
           const rawCS =  JSON.parse(data.doc.text);
@@ -138,8 +163,9 @@ class MyEditor extends React.Component {
     });
   }
 
-  componentWillUnMount() {
-    this.socket.disconnect();
+  componentWillUnmount() {
+    self.state.socket.emit('disconnectId'. self.state.socket.id);
+    self.state.socket.disconnect();
   }
 
   //recieves all keyDown events.
@@ -163,11 +189,6 @@ class MyEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
-        // this.setState({saveFlag: true});
-        // console.log("SAVING");
-        // this.setState({saveFlag: true}, function () {
-        //   console.log('state in handle', this.state);
-        // });
         return true;
       })
       .catch(err => {
