@@ -3,16 +3,11 @@ import axios from 'axios';
 import diff from 'diff';
 import customStyleMap from './customMaps/customStyleMap';
 
-import { ContentState,
-         convertFromRaw,
-         convertToRaw,
+import { convertFromRaw,
          Editor,
          EditorState,
-         RichUtils,
-         getDefaultKeyBinding,
-         KeyBindingUtil,
-         Modifier } from 'draft-js';
-const {hasCommandModifier} = KeyBindingUtil;
+         KeyBindingUtil } from 'draft-js';
+const { hasCommandModifier } = KeyBindingUtil;
 
 class History extends React.Component {
   constructor(props) {
