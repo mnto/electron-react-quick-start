@@ -268,7 +268,6 @@ class MyEditor extends React.Component {
     })
     .then(({data}) => {
       if (data.doc) {
-        console.log(data.doc);
         this.props.history.push('/history/' + this.props.id);
       } else {
         console.log("errr loading");
