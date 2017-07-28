@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import io from 'socket.io-client';
+
 import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
 import BlockStyleControls from './BlockStyleControls';
@@ -25,28 +27,93 @@ class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      socket: this.props.socket,
       editorState: EditorState.createEmpty()
     };
 
-    //when something in the editor changes
-    this.onChange = (editorState) => {
-      //console.log('ON CHANGE');
-      this.setState({editorState: editorState});
-      const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-      const strCS = JSON.stringify(rawCS);
-      this.props.socket.emit("sendContentState", strCS);
-    };
+    this.socket = io('http://localhost:3000/');
+
+    this.previousHighlight = null;
+
+    this.socket.on('connect', () => {
+      console.log('CONNECTED TO SOCKETS');
+    });
+
+    this.socket.on('joinedRoom', () => {
+      console.log("JOINED THE ROOM");
+    });
+
+    this.socket.on('errorMessage', (message) => {
+      console.log("ERROR", message);
+    });
+
+    this.socket.on('sendBackContentState', (socketStr) => {
+      const socketRaw =  JSON.parse(socketStr);
+      const socketCS = convertFromRaw(socketRaw);
+      const socketState = EditorState.createWithContent(socketCS);
+      this.setState({editorState: socketState});
+      console.log("SET STATE AFTER SENDING BACK CONTENT STATE");
+    });
+
+    this.socket.on('sendBackCursorLocation', cursor => {
+      console.log("CURSOR LOCATION COMETH", cursor);
+
+      let editorState = this.state.editorState;
+      const originalES = editorState;
+      const originalSelec = editorState.getSelection();
+
+      const incomingCursor = originalSelec.merge(cursor);
+      const temporaryES = EditorState.forceSelection(originalES, incomingCursor);
+
+      this.setState({ editorState: temporaryES}, () => {
+        const windowSelection = window.getSelection();
+        const range = windowSelection.getRangeAt(0);
+        const rectangle = range.getClientRects()[0];
+        console.log("RANGE", range);
+        console.log("RECTANGLE", rectangle);
+        const { top, left, bottom } = rectangle;
+        this.setState({
+          editorState: originalES,
+          top,
+          left,
+          height: bottom - top
+        });
+      });
+    });
+
+    this.socket.emit('documentId', this.props.id);
 
     //when the editor is selected/in focus - default by draft
     this.focus = () => this.refs.editor.focus();
   }
 
+  //when something in the editor changes
+  onChange(editorState) {
+    const selection = this.state.editorState.getSelection();
+
+    if (this.previousHighlight){
+      editorState = EditorState.acceptSelection(editorState, this.previousHighlight);
+      editorState = RichUtils.toogleInlineStyle(editorState, 'RED');
+      editorState = EditorState.acceptSelection(editorState, selection);
+      this.previousHighlight = null;
+    }
+
+    if (selection.getStartOffset() === selection.getEndOffset()){
+      console.log('selection', selection);
+      this.socket.emit('cursorLocation', selection);
+    } else {
+      editorState = RichUtils.toggleInlineStyle(editorState, 'RED');
+      this.previousHighlight = editorState.getSelection();
+    }
+
+    //console.log('ON CHANGE');
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    this.socket.emit("sendContentState", strCS);
+
+    this.setState({ editorState });
+  };
+
   componentDidMount() {
-    // this.props.socket.emit('started', 'hello world!');
-    //GET MOST RECENT FROM DOC DB
-    //console.log("PROPS", this.props);
-    //Axios call to get the document
     axios.get('http://localhost:3000/docs/' + this.props.id)
     .then(({ data }) => {
       if (data.success) {
@@ -63,48 +130,17 @@ class MyEditor extends React.Component {
         this.setState({editorState: newState});
       }
       else {
-        console.log("ERROR LOADING");
+        console.log("ERROR LOADING DOC DATA", data.error);
       }
     })
     .catch(err => {
       console.log(err);
     });
-
-    this.state.socket.on('connect', () => {
-      console.log('CONNECTED TO SOCKETS');
-      this.state.socket.emit("documentId", this.props.id);
-    });
-    this.state.socket.on('errorMessage', message => {
-      console.log("ERROR", message);
-    });
-    this.state.socket.on('sendBackContentState', socketStr => {
-      const socketRaw =  JSON.parse(socketStr);
-      const socketCS = convertFromRaw(socketRaw);
-      const socketState = EditorState.createWithContent(socketCS);
-      this.setState({editorState: socketState});
-    });
-
   }
 
   componentWillUnMount() {
-    this.state.socket.disconnect();
+    this.socket.disconnect();
   }
-
-  // onSave(e) {
-  //   e.preventDefault();
-  //   const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-  //   const strCS = JSON.stringify(rawCS);
-  //   axios.post('http://localhost:3000/docs/save/' + this.props.id, {
-  //     text: strCS
-  //   })
-  //   .then(resp => {
-  //     console.log(resp);
-  //     // this.setState({saveFlag: true});
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-  // }
 
   //recieves all keyDown events.
   //helps us define custom key bindings
@@ -146,18 +182,6 @@ class MyEditor extends React.Component {
     }
     return false;
   }
-
-  // onBack(e) {
-  //   //e.preventDefault();
-  //   this.setState({buttonClicked: true});
-  //   console.log('state in back', this.state);
-  //   // if (this.state.saveFlag && this.state.buttonClicked) {
-  //   this.props.history.push('/user/' + this.props.id);
-  //   // }
-  //   // else {
-  //   //   alert("You haven't saved your changes yet");
-  //   // }
-  // }
 
   //on tab event
   onTab(e) {
@@ -301,6 +325,17 @@ class MyEditor extends React.Component {
       .getType();
     return (
       <div className="container editorRoot">
+        {this.state.top && (
+          <div style={{
+            position: 'absolute',
+            backgroundColor: 'red',
+            width: '2px',
+            height: this.state.height,
+            top: this.state.top,
+            left: this.state.left
+          }}>
+          </div>
+        )}
         <div className="row">
           <div className="editor col s12">
             <div className="toolbar">

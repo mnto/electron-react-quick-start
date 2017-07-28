@@ -6,20 +6,27 @@ var socketExport = (io) => {
     socket.on('documentId', (documentId) => {
       room = documentId.toString();
       socket.join(room);
-      console.log("joined room");
+      console.log("JOINED ROOM");
+      socket.to(room).emit('joinedRoom');
     });
 
     socket.on('sendContentState', (cs) => {
-      socket.to(room).emit('sendBackContentState', cs);
-    });
-
-    socket.on('sendSelection', selectionState => {
-      console.log("RECIEVED SELECTION");
-      socket.to(room).emit('sendBackSelection', selectionState);
+      console.log("SEND CONTENT STATE", cs);
+      socket.broadcast.to(room).emit('sendBackContentState', cs);
     });
 
     socket.on('errorMessage', (err) => {
       console.log("ERROR", err);
+    });
+
+    socket.on('cursorLocation', (cursor) => {
+      console.log("CURSOR MOVES");
+      socket.broadcast.to(room).emit('sendBackCursorLocation', cursor);
+    });
+
+    socket.on('disconnect', () => {
+      console.log("SOCKET DISCONNECTETH");
+      socket.leave(room);
     });
   });
 };

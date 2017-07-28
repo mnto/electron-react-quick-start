@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, SelectionState , Modifier } from 'draft-js';
+import { ContentState, convertFromRaw, convertToRaw, Editor, EditorState, RichUtils, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js';
 const {hasCommandModifier} = KeyBindingUtil;
 import BlockStyleControls from './BlockStyleControls';
 import InlineStyleControls from './InlineStyleControls';
@@ -20,13 +20,15 @@ class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: [],
       socket: this.props.socket,
       editorState: EditorState.createEmpty()
     };
+    this.previousHighlight = null;
 
     //when something in the editor changes
     this.onChange = (editorState) => {
+
+      const selection = this.state.editorState.getSelection();
       //console.log('ON CHANGE');
       this.setState({editorState: editorState});
       const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
@@ -56,7 +58,7 @@ class TextEditor extends React.Component {
         else {
           newState = EditorState.createEmpty();
         }
-        self.setState({editorState: newState, history: data.doc.history})
+        this.setState({editorState: newState});
       }
       else {
         console.log("ERROR LOADING");
@@ -79,27 +81,50 @@ class TextEditor extends React.Component {
       const socketState = EditorState.createWithContent(socketCS);
       this.setState({editorState: socketState});
     });
+    this.state.socket.on('sendBackCursorLocation', incomingSelectionObj => {
+      console.log("CURSOR LOCATION SENT BACK");
+      let editorState = this.state.editorState;
+      const originalES = editorState;
+      const originalSelection = editorState.getSelection();
+
+      const incomingSelectionState = originalSelection.merge(incomingSelectionObj);
+      const temporaryES = EditorState.forceSelection(originalES, incomingSelectionState);
+      this.setState({ editorState: temporaryES }, () => {
+        const windowSelection = window.getSelection();
+        const range = windowSelection.getRangeAt(0);
+        const rectangle = range.getClientRects()[0];
+        console.log("RANGE", range);
+        console.log("RECTANGLE", rectangle);
+        const { top, left, height } = rects;
+        this.setState({
+          editorState: originalES,
+          top,
+          left,
+          height,
+        })
+      });
+    })
   }
 
   componentWillUnMount() {
     this.state.socket.disconnect();
   }
 
-  onSave(e) {
-    e.preventDefault();
-    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-    const strCS = JSON.stringify(rawCS);
-    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
-      text: strCS
-    })
-    .then(resp => {
-      console.log(resp);
-      this.setState({history: resp.data.doc.history});
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  }
+  // onSave(e) {
+  //   e.preventDefault();
+  //   const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+  //   const strCS = JSON.stringify(rawCS);
+  //   axios.post('http://localhost:3000/docs/save/' + this.props.id, {
+  //     text: strCS
+  //   })
+  //   .then(resp => {
+  //     console.log(resp);
+  //     // this.setState({saveFlag: true});
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
+  // }
 
   //recieves all keyDown events.
   //helps us define custom key bindings
@@ -122,7 +147,11 @@ class TextEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
-        this.setState({history: resp.data.doc.history});
+        // this.setState({saveFlag: true});
+        // console.log("SAVING");
+        // this.setState({saveFlag: true}, function () {
+        //   console.log('state in handle', this.state);
+        // });
         return true;
       })
       .catch(err => {
@@ -138,10 +167,38 @@ class TextEditor extends React.Component {
     return false;
   }
 
+  // onBack(e) {
+  //   //e.preventDefault();
+  //   this.setState({buttonClicked: true});
+  //   console.log('state in back', this.state);
+  //   // if (this.state.saveFlag && this.state.buttonClicked) {
+  //   this.props.history.push('/user/' + this.props.id);
+  //   // }
+  //   // else {
+  //   //   alert("You haven't saved your changes yet");
+  //   // }
+  // }
+
   //on tab event
   onTab(e) {
     const depth = 4;
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
+  }
+
+
+  onSave(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
+      text: strCS
+    })
+    .then(resp => {
+      console.log(resp);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   //toggles block type
@@ -287,17 +344,8 @@ class TextEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
-  onHistClick(hist) {
-    console.log('click hist');
-    const rawCS =  JSON.parse(hist.text);
-    const contentState = convertFromRaw(rawCS);
-    var newState = EditorState.createWithContent(contentState);
-    this.setState({editorState: newState});
-  }
-
   render() {
-    const self = this;
-    
+    console.log('props', this.props);
     return (
       <div className="container">
         <div className="row">
