@@ -22,6 +22,9 @@ import FONTS from './fonts';
 import SIZES from './sizes';
 import BLOCK_TYPES from './blockTypes';
 import StyleButton from './StyleButton';
+import toastr from 'toastr';
+toastr.options.preventDuplicates = true;
+toastr.options.timeOut = 1000;
 
 const SearchHighlight = (props) => (
   <span className="search-highlight">{props.children}</span>
@@ -33,8 +36,7 @@ class MyEditor extends React.Component {
     this.state = {
       socket: this.props.socket,
       editorState: EditorState.createEmpty(),
-      searchStr: '',
-      replace: ''
+      searchStr: ''
     };
 
     //when something in the editor changes
@@ -95,6 +97,21 @@ class MyEditor extends React.Component {
     this.state.socket.disconnect();
   }
 
+  onSave(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
+      text: strCS
+    })
+    .then(resp => {
+      toastr.success('Saved!');
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
   //recieves all keyDown events.
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
@@ -116,6 +133,7 @@ class MyEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
+        toastr.success('Saved!');
         return true;
       })
       .catch(err => {
@@ -137,20 +155,6 @@ class MyEditor extends React.Component {
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
 
-  onSave(e) {
-    e.preventDefault();
-    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
-    const strCS = JSON.stringify(rawCS);
-    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
-      text: strCS
-    })
-    .then(resp => {
-      console.log(resp);
-    })
-    .catch(err => {
-      console.log(err);
-    });
-  }
   //
   //toggles block type
   toggleBlockType(blockType) {
@@ -171,7 +175,8 @@ class MyEditor extends React.Component {
       )
     );
   }
-  //
+  
+  // toggles alignment styling
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
@@ -288,6 +293,26 @@ class MyEditor extends React.Component {
       editorState: EditorState.set(this.state.editorState,
         { decorator: this.generateDecorator(e.target.value) })});
   }
+
+  onHistClick(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/current/' + this.props.id, {
+      text: strCS
+    })
+    .then(({data}) => {
+      if (data.doc) {
+        this.props.history.push('/history/' + this.props.id);
+      } else {
+        console.log("errr loading");
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
 
   render() {
     var counter = 0;
@@ -412,6 +437,12 @@ class MyEditor extends React.Component {
               className="btn waves-effect waves-light col">
               <i className="material-icons left">save</i>
               Save Changes
+            </button>
+            <button
+              onClick={(e) => this.onHistClick(e)}
+              className="btn waves-effect waves-light">
+              See revision history
+              <i className="material-icons left">history</i>
             </button>
           </div>
         </div>

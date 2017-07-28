@@ -6,6 +6,7 @@ import DocPortal from './DocPortal';
 import DocLanding from './DocLanding';
 import SearchResults from './SearchResults';
 import axios from 'axios';
+import History from './History';
 
 class AppContainer extends React.Component {
   constructor(props){
@@ -42,6 +43,7 @@ class AppContainer extends React.Component {
             <Route exact={true} path="/searchResults" component={SearchResults}/>
             <Route exact={true} path="/" component={Login}/>
             <Route exact={true} path="/logout" component={Login}/>
+            <Route exact={true} path='/history/:docId' component={History}/>
             <Route render={() => <h1>404, Sorry fam.</h1>} />
         </Switch>
       </HashRouter>
