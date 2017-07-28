@@ -175,7 +175,7 @@ class MyEditor extends React.Component {
       )
     );
   }
-  
+
   // toggles alignment styling
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
@@ -332,21 +332,21 @@ class MyEditor extends React.Component {
           <div className="editor col s12">
             <div className="toolbar">
               <select className="browser-default toolbar-selector" id="font" onChange={this.onFontClick.bind(this)}>
-                 <option value="" disabled>Font</option>
+                 <option value="">Font</option>
                 {FONTS.map(font =>
                   <option key={counter++} value={font.style}> {font.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="color" onChange={this.onColorClick.bind(this)}>
-                <option disabled value="" key={counter++}>Color</option>
+                <option value="" key={counter++}>Color</option>
                 {COLORS.map(color => <
                   option key={counter++}> {color.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="size" onChange={this.onSizeClick.bind(this)}>
-                <option disabled value="" key={counter++}>Font Size</option>
+                <option value="" key={counter++}>Font Size</option>
                 {SIZES.map(size =>
                   <option key={counter++} value={size.style}> {size.style} </option>)}
               </select>
-              <div className="buttons">
+              <div className="toolbar-buttons">
                 <StyleButton
                   key='bold'
                   active={currentStyle.has('BOLD')}
@@ -431,18 +431,18 @@ class MyEditor extends React.Component {
               />
             </div>
           </div>
-          <div className="col s12 save-btn">
+          <div className="col s12 history-buttons">
             <button
               onClick={(e) => this.onSave(e)}
-              className="btn waves-effect waves-light col">
+              className="btn waves-effect waves-light save">
               <i className="material-icons left">save</i>
               Save Changes
             </button>
             <button
               onClick={(e) => this.onHistClick(e)}
-              className="btn waves-effect waves-light">
-              See revision history
+              className="btn waves-effect waves-light history">
               <i className="material-icons left">history</i>
+              See revision history
             </button>
           </div>
         </div>

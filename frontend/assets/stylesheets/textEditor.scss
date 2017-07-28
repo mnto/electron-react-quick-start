@@ -38,11 +38,11 @@
   font-size: 15px;
   width: 32.5%;
 }
-.buttons {
+.toolbar-buttons {
   display: flex;
   justify-content: space-between;
 }
-.save-btn {
+.history-buttons {
   margin-top: 10px;
   margin-bottom: 10px;
   display: flex;
@@ -51,4 +51,7 @@
 }
 .search-highlight {
   background-color: $blue;
+}
+.save, .history {
+  margin: 0 10px;
 }
