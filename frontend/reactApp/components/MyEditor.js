@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
 
@@ -13,6 +14,18 @@ import {
   KeyBindingUtil,
   SelectionState,
   Modifier } from 'draft-js';
+=======
+import { ContentState,
+         CompositeDecorator,
+         convertFromRaw,
+         convertToRaw,
+         Editor,
+         EditorState,
+         RichUtils,
+         getDefaultKeyBinding,
+         KeyBindingUtil,
+         Modifier } from 'draft-js';
+>>>>>>> master
 const {hasCommandModifier} = KeyBindingUtil;
 import BlockStyleControls from './BlockStyleControls';
 import InlineStyleControls from './InlineStyleControls';
@@ -33,14 +46,25 @@ import FONTS from './fonts';
 import SIZES from './sizes';
 import BLOCK_TYPES from './blockTypes';
 import StyleButton from './StyleButton';
+import toastr from 'toastr';
+toastr.options.preventDuplicates = true;
+toastr.options.timeOut = 1000;
+
+const SearchHighlight = (props) => (
+  <span className="search-highlight">{props.children}</span>
+);
 
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
+<<<<<<< HEAD
       userIndex: null,
       socket:io('http://localhost:3000/')
+=======
+      searchStr: ''
+>>>>>>> master
     };
 
     // this.state.socket = ;
@@ -168,6 +192,24 @@ class MyEditor extends React.Component {
     self.state.socket.disconnect();
   }
 
+<<<<<<< HEAD
+=======
+  onSave(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/save/' + this.props.id, {
+      text: strCS
+    })
+    .then(resp => {
+      toastr.success('Saved!');
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
+>>>>>>> master
   //recieves all keyDown events.
   //helps us define custom key bindings
   //return a command(string) that should be executed depending on keyDown
@@ -189,6 +231,10 @@ class MyEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
+<<<<<<< HEAD
+=======
+        toastr.success('Saved!');
+>>>>>>> master
         return true;
       })
       .catch(err => {
@@ -210,6 +256,7 @@ class MyEditor extends React.Component {
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
 
+<<<<<<< HEAD
 
   onSave(e) {
     e.preventDefault();
@@ -225,6 +272,8 @@ class MyEditor extends React.Component {
       console.log(err);
     });
   }
+=======
+>>>>>>> master
   //
   //toggles block type
   toggleBlockType(blockType) {
@@ -247,7 +296,8 @@ class MyEditor extends React.Component {
       )
     );
   }
-  //
+  
+  // toggles alignment styling
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
@@ -336,6 +386,59 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
+<<<<<<< HEAD
+=======
+  findWithRegex(regex, contentBlock, callback) {
+    const text = contentBlock.getText();
+    let matchArr, start, end;
+    while ((matchArr = regex.exec(text)) !== null) {
+      // matchArr format: [searchStr, index: index where the result appears, input: input]
+      start = matchArr.index;
+      end = start + matchArr[0].length;
+      callback(start, end);
+    }
+  }
+
+  generateDecorator(highlightTerm) {
+    const regex = new RegExp(highlightTerm, 'g');
+    return new CompositeDecorator([{
+      strategy: (contentBlock, callback) => {
+        if (highlightTerm !== '') {
+          this.findWithRegex(regex, contentBlock, callback);
+        }
+      },
+      component: SearchHighlight,
+    }]);
+  }
+
+  onChangeSearch(e) {
+    this.setState({
+      searchStr: e.target.value,
+      editorState: EditorState.set(this.state.editorState,
+        { decorator: this.generateDecorator(e.target.value) })});
+  }
+
+  onHistClick(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/current/' + this.props.id, {
+      text: strCS
+    })
+    .then(({data}) => {
+      if (data.doc) {
+        this.props.history.push('/history/' + this.props.id);
+      } else {
+        console.log("errr loading");
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
+
+
+>>>>>>> master
   render() {
     var counter = 0;
     var currentStyle = this.state.editorState.getCurrentInlineStyle();
@@ -358,20 +461,24 @@ class MyEditor extends React.Component {
           </div>
         )}
         <div className="row">
+          <div className="input-field">
+            <input onChange={(e) => this.onChangeSearch(e)} id="search" type="search" required placeholder="Search for words in this document"/>
+            <label className="label-icon" htmlFor="search"><i className="material-icons">search</i></label>
+          </div>
           <div className="editor col s12">
             <div className="toolbar">
               <select className="browser-default toolbar-selector" id="font" onChange={this.onFontClick.bind(this)}>
-                 <option value="" disabled selected>Font</option>
+                 <option value="" disabled>Font</option>
                 {FONTS.map(font =>
                   <option key={counter++} value={font.style}> {font.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="color" onChange={this.onColorClick.bind(this)}>
-                <option disabled selected value="" key={counter++}>Color</option>
+                <option disabled value="" key={counter++}>Color</option>
                 {COLORS.map(color => <
                   option key={counter++}> {color.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="size" onChange={this.onSizeClick.bind(this)}>
-                <option disabled selected value="" key={counter++}>Font Size</option>
+                <option disabled value="" key={counter++}>Font Size</option>
                 {SIZES.map(size =>
                   <option key={counter++} value={size.style}> {size.style} </option>)}
               </select>
@@ -463,9 +570,15 @@ class MyEditor extends React.Component {
           <div className="col s12 save-btn">
             <button
               onClick={(e) => this.onSave(e)}
-              className="btn waves-effect waves-light">
-              Save Changes
+              className="btn waves-effect waves-light col">
               <i className="material-icons left">save</i>
+              Save Changes
+            </button>
+            <button
+              onClick={(e) => this.onHistClick(e)}
+              className="btn waves-effect waves-light">
+              See revision history
+              <i className="material-icons left">history</i>
             </button>
           </div>
         </div>

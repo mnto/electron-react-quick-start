@@ -10,7 +10,9 @@
 }
 .toolbar {
   border-top: 1px solid $gray;
-  background-color: $gray_lighten;
+  border-left: 1px solid $gray;
+  border-right: 1px solid $gray;
+  background-color: $rose;
   border-radius: 2px;
 }
 .editor {
@@ -23,6 +25,8 @@
   border-radius: 2px;
   padding-left: 15px;
   padding-right: 15px;
+  overflow-y: auto;
+  height: 500px;
 }
 .toolbar-selector {
   display: inline-block !important;
@@ -44,4 +48,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.search-highlight {
+  background-color: $blue;
 }

@@ -1,0 +1,22 @@
+@import "colors";
+
+.nav-wrapper {
+  height: 70px;
+  margin: 0;
+  background-color: $deep_purple_lighten;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.btn {
+  box-shadow: 0 0 0 0;
+  border: 0;
+  height: 100%;
+  background-color: rgba(126,87,194, 1);
+}
+.btn:hover {
+  box-shadow: 0 0 0 0;
+  border: 0;
+  background-color: rgba(126,87,194, 1);
+}

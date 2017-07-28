@@ -8,7 +8,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      user: null
     };
   }
 
@@ -52,22 +53,29 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="container login">
-        <div className="row">
-          <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
-            <div className="row">
-              <div className="input-field col s6">
-                <i className="material-icons prefix">account_box</i>
-                <input id="username" type="text" placeholder="Username" className="validate" value={this.state.username} onChange={(e) => this.onUsernameChange(e)}/>
+      <div>
+        <nav>
+          <div className="nav-wrapper">
+            <a href="#" className="brand-logo center">Nodebook</a>
+          </div>
+        </nav>
+        <div className="container login">
+          <div className="row">
+            <form className="col s12" onSubmit={(e) => this.onSubmit(e)}>
+              <div className="row">
+                <div className="input-field col s6">
+                  <i className="material-icons prefix">account_box</i>
+                  <input id="username" type="text" placeholder="Username" className="validate" value={this.state.username} onChange={(e) => this.onUsernameChange(e)}/>
+                </div>
+                <div className="input-field col s6">
+                  <i className="material-icons prefix">lock</i>
+                  <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
+                </div>
+                <button type="submit" className="btn waves-effect waves-light blue darken-1 col s4 offset-s4 login-btn">Login</button>
+                <Link to="/register" className="btn waves-effect waves-light accent-3 col s4 offset-s4">Register</Link>
               </div>
-              <div className="input-field col s6">
-                <i className="material-icons prefix">lock</i>
-                <input id="password" type="password" placeholder="Password" className="validate" value={this.state.password} onChange={(e) => this.onPasswordChange(e)}/>
-              </div>
-              <button type="submit" className="btn waves-effect waves-light green accent-3 col s2 offset-s5 login-btn">Login</button>
-              <Link to="/register" className="btn waves-effect waves-light accent-3 col s2 offset-s5">Register</Link>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     );

@@ -30,6 +30,7 @@ router.get('/user/:userId', function(req, res) {
 router.get('/docs/:docId', (req, res)=> {
   Document.findById(req.params.docId)
   .populate('owner')
+  .populate('collabs')
   .exec((err, doc) => {
     if (err) {
       console.log(err);
@@ -113,6 +114,23 @@ router.get('/docs/check/:docId', (req, res) => {
   });
 });
 
+router.post('/docs/current/:docId', (req, res) => {
+  const text = req.body.text
+  Document.findById(req.params.docId, (err, doc) => {
+    if (err) {
+      console.log(err);
+      res.json({success: false, message: err});
+    } else if (!doc) {
+      console.log("no document found");
+      res.json({success: false, message: "no doc found"});
+    } else {
+      doc.current = text;
+      doc.save();
+      res.json({success: true, doc: doc});
+    }
+  });
+});
+
 router.post('/docs/add-collab', (req, res) => {
   Document.findById(req.body.docId, (err, doc) => {
     if (err){
@@ -135,5 +153,20 @@ router.post('/docs/add-collab', (req, res) => {
   });
 });
 
+
+// get the user object
+router.get('/users/:userId', (req, res) => {
+  User.findById(req.params.userId, (err, user) => {
+    if (err) {
+      res.json({success: false, message: err});
+    }
+    else if (!user) {
+      res.json({success: false, message: "No such user was found"});
+    }
+    else {
+      res.json({success: true, user: user});
+    }
+  });
+});
 
 module.exports = router;
