@@ -21,6 +21,9 @@ import FONTS from './fonts';
 import SIZES from './sizes';
 import BLOCK_TYPES from './blockTypes';
 import StyleButton from './StyleButton';
+import toastr from 'toastr';
+toastr.options.preventDuplicates = true;
+toastr.options.timeOut = 1000;
 
 class MyEditor extends React.Component {
   constructor(props) {
@@ -28,7 +31,6 @@ class MyEditor extends React.Component {
     this.state = {
       socket: this.props.socket,
       editorState: EditorState.createEmpty(),
-      history: [],
     };
 
     //when something in the editor changes
@@ -59,7 +61,7 @@ class MyEditor extends React.Component {
         else {
           newState = EditorState.createEmpty();
         }
-        this.setState({editorState: newState, history: data.doc.history});
+        this.setState({editorState: newState});
       }
       else {
         console.log("ERROR LOADING");
@@ -97,8 +99,7 @@ class MyEditor extends React.Component {
       text: strCS
     })
     .then(resp => {
-      console.log(resp);
-      this.setState({history: resp.data.doc.history});
+      toastr.success('Saved!');
     })
     .catch(err => {
       console.log(err);
@@ -127,7 +128,7 @@ class MyEditor extends React.Component {
       })
       .then(resp => {
         console.log(resp);
-        this.setState({history: resp.data.doc.history});
+        toastr.success('Saved!');
         return true;
       })
       .catch(err => {
@@ -258,13 +259,26 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
-  onHistClick(hist) {
-    console.log('click hist');
-    const rawCS =  JSON.parse(hist.text);
-    const contentState = convertFromRaw(rawCS);
-    var newState = EditorState.createWithContent(contentState);
-    this.setState({editorState: newState});
+  onHistClick(e) {
+    e.preventDefault();
+    const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
+    const strCS = JSON.stringify(rawCS);
+    axios.post('http://localhost:3000/docs/current/' + this.props.id, {
+      text: strCS
+    })
+    .then(({data}) => {
+      if (data.doc) {
+        console.log(data.doc);
+        this.props.history.push('/history/' + this.props.id);
+      } else {
+        console.log("errr loading");
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
+
 
   render() {
     const self = this;
@@ -368,19 +382,6 @@ class MyEditor extends React.Component {
                 </StyleButton>
               </div>
             </div>
-            <div className="historyContainer">
-                {self.state.history &&
-                  <ul>
-                  {self.state.history.map(function(hist, index){
-                    return (<li
-                      onClick={self.onHistClick.bind(self, hist)}
-                      key={index}>
-                      <a>{hist.timestamp}</a>
-                    </li>);
-                  })}
-                </ul>
-                }
-            </div>
             <div className="textarea" onClick={this.focus}>
               <Editor
                 handleKeyCommand={this.handleKeyCommand.bind(this)}
@@ -399,6 +400,12 @@ class MyEditor extends React.Component {
               className="btn waves-effect waves-light">
               Save Changes
               <i className="material-icons left">save</i>
+            </button>
+            <button
+              onClick={(e) => this.onHistClick(e)}
+              className="btn waves-effect waves-light">
+              See revision history
+              <i className="material-icons left">history</i>
             </button>
           </div>
         </div>
