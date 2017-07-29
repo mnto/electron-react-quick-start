@@ -17,6 +17,7 @@ class History extends React.Component {
     };
   }
 
+  // makes a get request to get the get the current document that the user is editing
   componentWillMount() {
     const docId = this.props.match.params.docId;
     var self = this;
@@ -43,19 +44,19 @@ class History extends React.Component {
     });
   }
 
+  // renders a certain old version of the text pulled from database
   onHistClick(hist) {
     const oldCS = convertFromRaw(JSON.parse(hist.text));
     const newState = EditorState.createWithContent(oldCS);
     this.setState({oldCS: newState});
   }
 
-  //function to go back to document landing page
+  // redirects back to document landing page
   onBack(e) {
     e.preventDefault();
     console.log('state in back', this.state);
     this.props.history.push('/docs/' + this.state.doc._id);
   }
-
 
   render() {
     var self = this;

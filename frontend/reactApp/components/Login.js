@@ -13,6 +13,7 @@ class Login extends React.Component {
     };
   }
 
+  // makes a post request when user logs in
   onSubmit(event) {
     event.preventDefault();
     axios.post('http://localhost:3000/login', {
@@ -27,18 +28,22 @@ class Login extends React.Component {
     });
   }
 
+
+  // sets username according to the input field
   onUsernameChange(event) {
     this.setState({
       username: event.target.value
     });
   }
 
+  // sets user password according to input field
   onPasswordChange(event) {
     this.setState({
       password: event.target.value
     });
   }
 
+  // when user is logged in, they are redirected to their document portal
   componentDidMount(){
     axios.get('http://localhost:3000/user/logged-in')
     .then((response) => {

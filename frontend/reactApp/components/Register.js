@@ -14,6 +14,7 @@ class Register extends React.Component{
     };
   }
 
+  // when user clicks on Register, makes a post request to the back end to create a new user
   onSubmit(e) {
     e.preventDefault();
     axios.post('http://localhost:3000/register', {
@@ -32,24 +33,28 @@ class Register extends React.Component{
 
   }
 
+  // sets user' username in state according to the input field
   handleUsernameChange(event) {
     this.setState({
       username: event.target.value
     });
   }
 
+  // sets user's password in state according to the input field
   handlePasswordChange(event){
     this.setState({
       password: event.target.value
     });
   }
 
+  // sets user's first name in state according to the input field
   handleFirstNameChange(event) {
     this.setState({
       fName: event.target.value
     });
   }
 
+  // sets user's last name in state according to the input field
   handleLastNameChange(event) {
     this.setState({
       lName: event.target.value

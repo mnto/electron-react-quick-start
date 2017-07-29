@@ -9,7 +9,6 @@ import { ContentState,
          getDefaultKeyBinding,
          KeyBindingUtil,
          Modifier } from 'draft-js';
-const {hasCommandModifier} = KeyBindingUtil;
 import alignStyleMap from './customMaps/alignStyleMap';
 import colorStyleMap from './customMaps/colorStyleMap';
 import sizeStyleMap from './customMaps/sizeStyleMap';
@@ -20,7 +19,6 @@ import axios from 'axios';
 import COLORS from './colors';
 import FONTS from './fonts';
 import SIZES from './sizes';
-import BLOCK_TYPES from './blockTypes';
 import StyleButton from './StyleButton';
 import toastr from 'toastr';
 toastr.options.preventDuplicates = true;
@@ -97,6 +95,8 @@ class MyEditor extends React.Component {
     this.state.socket.disconnect();
   }
 
+  // when the user clicks save, makes a post request to save the document to database,
+  // adding to the history array of that particular document
   onSave(e) {
     e.preventDefault();
     const rawCS= convertToRaw(this.state.editorState.getCurrentContent());
@@ -123,7 +123,7 @@ class MyEditor extends React.Component {
     return getDefaultKeyBinding(e);
   }
 
-  //recieve all commands from key bindings and applies changes
+  //recieves all commands from key bindings and applies changes
   handleKeyCommand(command) {
     if (command === "SAVE") {
       const rawCS= convertToRaw(this.props.editorState.getCurrentContent());
@@ -149,14 +149,13 @@ class MyEditor extends React.Component {
     return false;
   }
 
-  //on tab event
+  // tab length = 4
   onTab(e) {
     const depth = 4;
     this.onChange(RichUtils.onTab(e, this.props.editorState, depth));
   }
 
-  //
-  //toggles block type
+  // toggles block type including Block quote, code block, lists
   toggleBlockType(blockType) {
     this.onChange(
       RichUtils.toggleBlockType(
@@ -166,7 +165,7 @@ class MyEditor extends React.Component {
     );
   }
 
-  //toggles inline styles
+  // toggles inline styles including size, color, font, and style
   toggleInlineStyle(inlineStyle) {
     this.onChange(
       RichUtils.toggleInlineStyle(
@@ -176,7 +175,7 @@ class MyEditor extends React.Component {
     );
   }
 
-  // toggles alignment styling
+  // toggles alignment styling: left, center, right
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
@@ -206,6 +205,8 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
+  // when one of the StyleButtons gets clicked, triggers onClick
+  // determines wheter to toggle an inline style or block style
   onClick(toggleType, style) {
     console.log('toggleType:', toggleType, 'style:', style);
     if (toggleType === 'inline') {
@@ -216,22 +217,27 @@ class MyEditor extends React.Component {
 
   }
 
+  // triggers font toggling
   onFontClick() {
     this.onStyleClick("font", Object.keys(fontStyleMap));
   }
 
+  // triggers color toggling
   onColorClick() {
     this.onStyleClick("color", Object.keys(colorStyleMap));
   }
 
+  // triggers size toggling
   onSizeClick() {
     this.onStyleClick("size", Object.keys(sizeStyleMap));
   }
 
+  // triggers alignment toggling
   onAlignClick() {
     this.onStyleClick("align", Object.keys(alignStyleMap));
   }
 
+  // toggles a specific style given the type of style and a style map
   onStyleClick(styleId, arr) {
     let e = document.getElementById(styleId);
     let toggledStyle = e.options[e.selectedIndex].value;
@@ -264,6 +270,7 @@ class MyEditor extends React.Component {
     this.onChange(nextEditorState);
   }
 
+  // find text in the document that matches the given regular expression
   findWithRegex(regex, contentBlock, callback) {
     const text = contentBlock.getText();
     let matchArr, start, end;
@@ -275,6 +282,8 @@ class MyEditor extends React.Component {
     }
   }
 
+  // applies certain styling to all matches:
+  // highlights all matches in blue
   generateDecorator(highlightTerm) {
     const regex = new RegExp(highlightTerm, 'g');
     return new CompositeDecorator([{
@@ -287,6 +296,7 @@ class MyEditor extends React.Component {
     }]);
   }
 
+  // changes search string in state according to input field
   onChangeSearch(e) {
     this.setState({
       searchStr: e.target.value,
@@ -294,6 +304,8 @@ class MyEditor extends React.Component {
         { decorator: this.generateDecorator(e.target.value) })});
   }
 
+  // when user clicks on "See Revision History", redirects to revision page with comparisons
+  // between most recent version and older versions that were saved
   onHistClick(e) {
     e.preventDefault();
     const rawCS= convertToRaw(this.state.editorState.getCurrentContent());

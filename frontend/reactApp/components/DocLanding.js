@@ -3,8 +3,6 @@ import MyEditor from './MyEditor';
 import styles from '../../assets/stylesheets/docLanding.scss';
 import axios from 'axios';
 import io from 'socket.io-client';
-import { convertFromRaw, convertToRaw, EditorState} from 'draft-js';
-
 
 class DocLanding extends React.Component{
   constructor(props){
@@ -16,7 +14,8 @@ class DocLanding extends React.Component{
       socket: io('http://localhost:3000/')
     };
   }
-  
+
+  // makes a get to get the current document that the user is editing
   componentWillMount(){
     const docId = this.props.match.params.docId;
     this.setState({id: docId});
@@ -36,6 +35,7 @@ class DocLanding extends React.Component{
     });
   }
 
+  // when the back button is clicked, redirects to the document portal
   onBack(e) {
     e.preventDefault();
     console.log('state in back', this.state);

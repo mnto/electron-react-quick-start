@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, Modal, Icon } from 'react-materialize';
+import { Modal } from 'react-materialize';
 
 class NewDocModal extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class NewDocModal extends React.Component {
     };
   }
 
-
+  // when user clicks create a new document, create a new document in the database
   onSubmit(event) {
     event.preventDefault();
     axios.post('http://localhost:3000/docs/new', {
@@ -28,18 +28,19 @@ class NewDocModal extends React.Component {
     });
   }
 
+  // sets title in state according to the input field
   onTitleChange(event) {
     this.setState({
       title: event.target.value
     });
   }
 
+  // sets password in state according to the input field
   onPasswordChange(event) {
     this.setState({
       password: event.target.value
     });
   }
-
 
   render() {
     return (

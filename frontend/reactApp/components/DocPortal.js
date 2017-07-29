@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import { Button } from 'react-materialize';
 import  NewDocModal from './NewDocModal';
 import { Link } from 'react-router-dom';
 import styles from '../../assets/stylesheets/docPortal.scss';
@@ -18,6 +17,7 @@ class DocPortal extends React.Component{
     };
   }
 
+  // makes a request to log out the current user
   logout(e) {
     e.preventDefault();
     document.body.style.backgroundColor = "white";
@@ -30,18 +30,22 @@ class DocPortal extends React.Component{
       console.log('error logging out', err);
     });
   }
+
+  // sets shared document ID according to the input field
   handleIdChange(e){
     this.setState({
       shareDocId: e.target.value
     });
   }
 
+  // set password according to the input field
   handlePwdChange(e){
     this.setState({
       shareDocPwd: e.target.value
     });
   }
 
+  // makes a post request to collaborate on a document
   handleIdSubmit(e){
     e.preventDefault();
     axios.post('http://localhost:3000/docs/add-collab', {
@@ -65,6 +69,7 @@ class DocPortal extends React.Component{
     });
   }
 
+  // gets the user's documents and factor them into user's own documents and collaborating documents
   componentDidMount(){
     axios.get('http://localhost:3000/userID')
     .then((resp) => {
@@ -88,6 +93,7 @@ class DocPortal extends React.Component{
     });
   }
 
+  // when side nav bar is open, page is shifted right
   openNav() {
     var width = document.getElementById("portal").offsetWidth;
     var marginLeft = ((width - 250) * 0.15 + 250).toString() + 'px';
@@ -99,7 +105,7 @@ class DocPortal extends React.Component{
     document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
   }
 
-  /* Set the width of the side navigation to 0 */
+  // when side nav is closed, shift page back
   closeNav() {
     var width = document.getElementById("portal").offsetWidth;
     var margin = (width * 0.15).toString() + 'px';
@@ -110,15 +116,12 @@ class DocPortal extends React.Component{
     document.body.style.backgroundColor = "white";
   }
 
+  // set search value according to input field
   onChangeSearch(e) {
     this.setState({search: e.target.value});
   }
 
-  onSearch() {
-    console.log('searching');
-    this.props.history.push('/searchResults');
-  }
-
+  // get all user's documents whose titles match the search term
   getMyResults(searchTerm) {
     console.log('search term', searchTerm);
     var results = [];
@@ -130,6 +133,7 @@ class DocPortal extends React.Component{
     return results;
   }
 
+  // get all collaborating documents whose titles match the search term
   getCollabResults(searchTerm){
     var results = [];
     this.state.collabDocs.forEach(doc => {
@@ -142,8 +146,6 @@ class DocPortal extends React.Component{
 
   render(){
     var user = this.state.user;
-    //var myResults = this.getMyResults(this.state.search);
-    //var collabResults = this.getCollabResults(this.state.search);
     return(
       <div id="portal">
         {user && <div id="mySidenav" className="sidenav">
@@ -154,6 +156,7 @@ class DocPortal extends React.Component{
           </div>
           <div className="side-footer"><button className="logout-btn" onClick={(e) => this.logout(e)}>Logout</button></div>
         </div>}
+        {/* wait for user to return from the async get request */}
         {!user && <div id="mySidenav" className="sidenav">
           Loading...
         </div>}
