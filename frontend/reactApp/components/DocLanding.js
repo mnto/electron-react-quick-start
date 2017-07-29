@@ -15,9 +15,14 @@ class DocLanding extends React.Component{
       userId: '',
       document: '',
     };
+<<<<<<< HEAD
 
   }
 
+=======
+  }
+  
+>>>>>>> master
   componentWillMount(){
     const docId = this.props.match.params.docId;
     this.setState({ docId });

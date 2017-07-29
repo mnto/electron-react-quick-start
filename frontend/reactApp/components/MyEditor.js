@@ -245,7 +245,12 @@ class MyEditor extends React.Component {
       )
     );
   }
+<<<<<<< HEAD
   //
+=======
+
+  // toggles alignment styling
+>>>>>>> master
   toggleAlign(toggledAlignment) {
     const {editorState} = this.state;
     const selection = editorState.getSelection();
@@ -359,21 +364,33 @@ class MyEditor extends React.Component {
           <div className="editor col s12">
             <div className="toolbar">
               <select className="browser-default toolbar-selector" id="font" onChange={this.onFontClick.bind(this)}>
+<<<<<<< HEAD
                  <option value="" disabled selected>Font</option>
+=======
+                 <option value="">Font</option>
+>>>>>>> master
                 {FONTS.map(font =>
                   <option key={counter++} value={font.style}> {font.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="color" onChange={this.onColorClick.bind(this)}>
+<<<<<<< HEAD
                 <option disabled selected value="" key={counter++}>Color</option>
+=======
+                <option value="" key={counter++}>Color</option>
+>>>>>>> master
                 {COLORS.map(color => <
                   option key={counter++}> {color.style} </option>)}
               </select>
               <select className="browser-default toolbar-selector" id="size" onChange={this.onSizeClick.bind(this)}>
+<<<<<<< HEAD
                 <option disabled selected value="" key={counter++}>Font Size</option>
+=======
+                <option value="" key={counter++}>Font Size</option>
+>>>>>>> master
                 {SIZES.map(size =>
                   <option key={counter++} value={size.style}> {size.style} </option>)}
               </select>
-              <div className="buttons">
+              <div className="toolbar-buttons">
                 <StyleButton
                   key='bold'
                   active={currentStyle.has('BOLD')}
@@ -458,12 +475,24 @@ class MyEditor extends React.Component {
               />
             </div>
           </div>
-          <div className="col s12 save-btn">
+          <div className="col s12 history-buttons">
             <button
               onClick={(e) => this.onSave(e)}
+<<<<<<< HEAD
               className="btn waves-effect waves-light">
               Save Changes
               <i className="material-icons left">save</i>
+=======
+              className="btn waves-effect waves-light save">
+              <i className="material-icons left">save</i>
+              Save Changes
+            </button>
+            <button
+              onClick={(e) => this.onHistClick(e)}
+              className="btn waves-effect waves-light history">
+              <i className="material-icons left">history</i>
+              See revision history
+>>>>>>> master
             </button>
           </div>
         </div>
