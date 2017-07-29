@@ -62,15 +62,25 @@ var socketExport = (io) => {
       socket.broadcast.to(room).emit('sendBackCursorLocation', cursor);
     });
 
+
+    let removeIndex;
+    let removeRoom;
+    socket.on('disconnectId', ({ socketId, documentId }) => {
+      console.log("DISCONNECTID RECEIVED");
+      const leaveRoom = documentId;
+      socket.leave(leaveRoom);
+        allRooms.forEach(function(eachRoom, j){
+          if(eachRoom.room === leaveRoom){
+            removeIndex = eachRoom.users.indexOf(socketId);
+            removeRoom = j;
+          }
+        });
+      allRooms[removeRoom].users.splice(removeIndex, 1);
+    });
+
     socket.on('disconnect', () => {
       console.log("SOCKET DISCONNECTETH");
     });
-
-    socket.on('dicsonnectId', (id) => {
-      socket.leave(room);
-      const i = allRooms[roomIndex].users.indexOf(id);
-      allRooms[roomIndex].users.splice(i, 1);
-    })
 
   });
 };

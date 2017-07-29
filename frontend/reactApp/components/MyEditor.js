@@ -158,8 +158,12 @@ class MyEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    self.state.socket.emit('disconnectId'. self.state.socket.id);
-    self.state.socket.disconnect();
+    console.log("COMPONENT WILL UNMOUNT WORKS");
+    const disconnect = {socketId: this.state.socket.id, documentId: this.props.id};
+    console.log("DISCONNECT OBJECT", disconnect);
+    this.state.socket.emit('disconnectId', disconnect, () => {
+      this.state.socket.disconnect();
+    });
   }
 
   //recieves all keyDown events.
