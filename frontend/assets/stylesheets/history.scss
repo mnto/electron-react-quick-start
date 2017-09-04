@@ -17,7 +17,7 @@
 }
 .current {
   flex: 2;
-  overflow-x: auto;
+  overflow-y: auto;
   margin-left: 2px;
   margin-right: 2px;
 }
@@ -28,7 +28,7 @@
 .past {
   flex: 2;
   margin-right: 2px;
-  overflow-x: auto;
+  overflow-y: auto;
 }
 .past h2 {
   text-align: center;
